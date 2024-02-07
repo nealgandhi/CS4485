@@ -11,8 +11,9 @@ function Header() {
             }}
             className='bg-blue-800 grid-rows-4 gap-4'
         >
-            <div>
+            <div className='grid grid-cols-4 gap-4'>
                 <a href="/">Home</a>
+                <a href="/calendar">Calendar</a>
             </div>
         </div>
     );
