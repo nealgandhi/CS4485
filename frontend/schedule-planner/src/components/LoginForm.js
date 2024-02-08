@@ -7,10 +7,10 @@ function LoginForm() {
             <p className='font-medium text-lg text-gray-500 mt-4'>Welcome back! Please enter your details.</p>
             <div className='mt-8'>
                 <div className='flex flex-col'>
-                    <label className='text-lg font-medium'>Email</label>
+                    <label className='text-lg font-medium'>Username</label>
                     <input
                         className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Enter your email'
+                        placeholder='Enter your username'
                      />
                 </div>
                 <div className='flex flex-col'>
