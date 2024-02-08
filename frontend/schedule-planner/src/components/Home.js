@@ -15,8 +15,9 @@ function Home() {
                 overflow: "hidden"
             }} 
             >
-                <div className="flex flex-row min-h-screen justify-center items-center">
-                <a href="/login" class="text-center w-1/6 h-18 text-white bg-blue-800 hover:bg-blue-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-800 dark:hover:bg-blue-900 focus:outline-none dark:focus:ring-blue-800">Login / Sign Up</a>
+                <div className="flex flex-col min-h-screen justify-center items-center">
+                    <h1 className='text-theme-orange text-5xl font-semibold mb-8'>UTD Schedule Planner</h1>
+                    <a href="/login" class="text-center w-1/6 h-18 text-white bg-theme-navy hover:bg-navy-dark focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-theme-blue dark:hover:bg-navy-dark focus:outline-none dark:focus:ring-theme-navy">Login / Sign Up</a>
                 </div>
             </div>
         </div>

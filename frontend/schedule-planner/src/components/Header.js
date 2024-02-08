@@ -9,7 +9,7 @@ function Header() {
                 position: "absolute",
                 width: "100vw"
             }}
-            className='bg-blue-800 grid-rows-4 gap-4'
+            className='bg-theme-navy grid-rows-4 gap-4'
         >
             <div className='grid grid-cols-4 gap-4'>
                 <a href="/">Home</a>
