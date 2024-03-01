@@ -16,7 +16,7 @@ function App() {
           <Route path="/" element={<Home/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
-          <Route path="/uploadTranscript" element={<UploadTranscript/>}/>
+          {/* <Route path="/uploadTranscript" element={<UploadTranscript/>}/> */}
         </Routes>
       </BrowserRouter>
       <Footer/>

@@ -19,7 +19,7 @@ function TranscriptUpload(props) {
     </li>
   ));
 
-  const fileRejectionItems = fileRejections.map(({ file, errors }) => (
+  const fileRejectionItems = fileRejections.map(({ file }) => (
     <li key={file.path}>
       Only upload pdf files. {file.path} is not a pdf file
     </li>
