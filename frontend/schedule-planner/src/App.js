@@ -5,8 +5,7 @@ import { BrowserRouter, Routes, Route, } from 'react-router-dom';
 import Login from './pages/LoginPage';
 import Footer from './components/Footer';
 import CalendarPage from './pages/CalendarPage';
-import UploadTranscript from './components/FileUpload';
-
+import UploadTranscript from './components/TranscriptUpload';
 
 function App() {
   return (
