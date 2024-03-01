@@ -1,10 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"database/sql"
-    _ "github.com/go-sql-driver/mysql"
+	"fmt"
+	"net/http"
+	"os"
+
+	"github.com/gin-gonic/contrib/static"
+	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Course struct {
@@ -17,10 +21,13 @@ type Course struct {
 	core string `json:"core"`
 }
 
+type Course2 struct {
+	Prefix string `json:"prefix"`
+	Number int `json:"number"`
+}
+
 
 func main() {
-    fmt.Println("This is a filler file meant to allow me to commit to the repo")
-
 	// Database Connection
 	dbUser := os.Getenv("DBUSER")
 	dbPass := os.Getenv("DBPASS")
@@ -38,18 +45,43 @@ func main() {
     // }
     // fmt.Println("Connected!")
 
-	// Retreive value
-	results, err := db.Query("SELECT id, prefix, number, name, level, historical_semester, core FROM Courses")
-    if err !=nil {
-        panic(err.Error())
-    }
-    for results.Next() {
-        var table Course
-        err = results.Scan(&table.id, &table.prefix, &table.number, &table.name, &table.level, &table.historical_semester, &table.core)
-        if err != nil {
-            panic(err.Error())
-        }
-        fmt.Println(table)
-    }
+	router := gin.Default()
+
+	router.Use(static.Serve("/", static.LocalFile("./views", true)))
+
+	api := router.Group("/api") 
+	{
+		api.GET("/", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H {
+				"message": "Reached",
+			})
+		})
+
+		api.GET("/course/:cprefix/:cnumber/prereqs", func(c *gin.Context) {
+			cprefix := c.Param("cprefix")
+			cnumber := c.Param("cnumber")
+			results, err := db.Query("SELECT Courses.prefix, Courses.number FROM Courses, Prereqs WHERE Prereqs.prereq_id=Courses.id AND Prereqs.course_id IN (SELECT id FROM Courses WHERE prefix=\""+cprefix+"\" AND number="+cnumber+")")
+			if err != nil {
+				c.AbortWithStatus(400)
+				fmt.Println(err)
+				return
+				//panic(err.Error())
+			}
+
+			var prereqs []Course2
+			for results.Next() {
+				var row Course2
+				err = results.Scan(&row.Prefix, &row.Number)
+				if err != nil {
+					panic(err.Error())
+				}
+				prereqs = append(prereqs, row)
+			}
+
+			c.JSON(http.StatusOK, gin.H {"prereqs": prereqs})
+		})
+	}
+
+	router.Run("0.0.0.0:8080")	
 
 }
