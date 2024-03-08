@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import React from 'react'
+import React, { useState } from 'react'
 
 function CourseSelectionPage() {
     const [course, setCourse] = useState("");       //keeps track of inputed course
-    const [val, setVal] = useState([]);
+    const [courseList, setCourseList] = useState([]);
 
-    const click = () => {       //handles when submit button pressed, adds course to box underneath
-        const courseElement=[...val,[]];
-        setVal(courseElement);
+    const handleSubmitClick = (e) => {       //handles when submit button pressed, adds course to box underneath
+        const currentCourse={course}
+        setCourseList((ls)=>[...ls,currentCourse])
     }
     const courseInput = event => {   //handle when course input is changing (allows user to type in input)
         setCourse(event.target.value);
+    }
+    const handleRemoveClick = () => {       //handle X button when removing inputted course
     }
     
     return (
@@ -28,19 +29,19 @@ function CourseSelectionPage() {
                     value={course}
                     onChange={courseInput}
                 />
-                <button onClick = {click} className="w-32 ml-8 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Search</button>
+                <button onClick = {handleSubmitClick} className="w-32 ml-8 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Search</button>
                 </div>
             </div>
             <div className="flex flex-row gap-20">
                 <div className="h-80 w-1/2 flex flex-wrap flex-col rounded-3xl border-2 border-gray-400 mt-10">
-                    {val.map(() => {
-                        return(
+                    <div>
+                        {courseList.map((a)=>           //Creates list of inputed courses
                             <div>
-                                {course}
-                                <button className=''>X</button>
+                                {a.course}
+                                <button onClick={handleRemoveClick} className=''>X</button>
                             </div>
-                        )
-                    })}
+                        )}
+                    </div>
                 </div>
                 <div className="h-80 w-64 flex flex-wrap flex-col justify-center items-center rounded-3xl border-2 border-gray-400 mt-10"></div>
             </div>
