@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, } from 'react-router-dom';
 import Login from './pages/LoginPage';
 import Footer from './components/Footer';
 import CalendarPage from './pages/CalendarPage';
+import CourseSelectionPage from './pages/CourseSelectionPage';
 // import UploadTranscript from './components/TranscriptUpload';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
+          <Route path="/courseSelection" element={<CourseSelectionPage/> } />
           {/* <Route path="/uploadTranscript" element={<UploadTranscript/>}/> */}
         </Routes>
       </BrowserRouter>
