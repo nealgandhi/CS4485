@@ -17,7 +17,13 @@ function CourseSelectionPage() {
     const courseInput = event => {   //handle when course input is changing (allows user to type in input)
         setCourse(event.target.value);
     }
-    const handleRemoveClick = () => {       //handle X button when removing inputted course
+    const handleRemoveClick = (c) => {       //handle X button when removing inputted course
+        const newList = courseList.filter((l)=>l.course !== c);
+        setCourseList(newList);
+    }
+
+    const handleDrag = (e) => {
+        
     }
     
     return (
@@ -38,18 +44,16 @@ function CourseSelectionPage() {
                 <button onClick = {handleSubmitClick} className="w-32 ml-8 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Search</button>
                 </div>
             </div>
-            <div className="flex flex-row gap-20">
-                <div className="h-80 w-1/2 flex flex-wrap flex-col rounded-3xl border-2 border-gray-400 mt-10">
-                    <div>
-                        {courseList.map((a)=>           //Creates list of inputed courses
-                            <div>
-                                {a.course}
-                                <button onClick={handleRemoveClick} className=''>X</button>
-                            </div>
-                        )}
-                    </div>
+            <div className="flex flex-row justify-between gap-20">
+                <div className="h-80 flex flex-wrap flex-col mt-10 ml-1">
+                    {courseList.map((a)=>           //Creates list of inputed courses
+                        <div draggable onDragStart={(e)=>handleDrag(e)} className='flex flex-row w-max justify-between gap-4 py-1 rounded-xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2'>
+                            <div className='ml-4'>{a.course}</div>
+                            <button onClick={()=>handleRemoveClick(a.course)} className='flex-row text-red-700 mr-4'>X</button>
+                        </div>
+                    )}
                 </div>
-                <div className="h-80 w-64 flex flex-wrap flex-col justify-center items-center rounded-3xl border-2 border-gray-400 mt-10"></div>
+                <div className="h-80 w-1/2 flex flex-wrap flex-col justify-center items-center rounded-3xl border-2 border-gray-400 mt-10 mr-20"></div>
             </div>
         </div>
     )

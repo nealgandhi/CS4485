@@ -6,7 +6,7 @@ function Footer() {
             style={{
                 color: "white",
                 padding: "5px",
-                position: "absolute",
+                position: "flex",
                 width: "100vw",
                 bottom: 0,
             }}
