@@ -6,7 +6,13 @@ function CourseSelectionPage() {
 
     const handleSubmitClick = (e) => {       //handles when submit button pressed, adds course to box underneath
         const currentCourse={course}
-        setCourseList((ls)=>[...ls,currentCourse])
+        if(course){
+            setCourseList((ls)=>[...ls,currentCourse])
+            setCourse("")
+        }
+        else{
+            alert("Input box is empty. Please enter the course number you wish to search.")
+        }
     }
     const courseInput = event => {   //handle when course input is changing (allows user to type in input)
         setCourse(event.target.value);
