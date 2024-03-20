@@ -23,17 +23,21 @@ function CourseSelectionPage() {
         setCourseList(newList);
     }
 
-    const handleDrag = (e, c) => {
+    const handleDrag = (e, c) => {             //handles dragging from available courses to selected courses to the right
         e.dataTransfer.setData("courseID", c)
     }
 
-    const handleDragOver = (e) => {
+    const handleRemoveSelected = (c) => {
+        const newCourseList = selectedCourses.filter((l)=>l !== c)
+        setSelectedCourses(newCourseList)
+    }
+
+    const handleDragOver = (e) => {  
         e.preventDefault();
     }
 
-    const handleDrop = (e) => {
+    const handleDrop = (e) => {         //handles dropping course into selected box
         const courseID = e.dataTransfer.getData("courseID")
-        console.log("courseID", courseID)
         setSelectedCourses((id)=>[...id, courseID])
     }
     
@@ -59,15 +63,16 @@ function CourseSelectionPage() {
                 <div className="h-80 flex flex-wrap flex-col mt-10 ml-1">
                     {courseList.map((a)=>           //Creates list of inputed courses
                         <div draggable onDragStart={(e)=>handleDrag(e, a.course)} className='flex flex-row w-max justify-between gap-4 py-1 rounded-xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2'>
-                            <div className='ml-4'>{a.course}</div>
+                            <div className='ml-4 cursor-pointer'>{a.course}</div>
                             <button onClick={()=>handleRemoveClick(a.course)} className='flex-row text-red-700 mr-4'>X</button>
                         </div>
                     )}
                 </div>
                 <div droppable onDragOver={(e)=>handleDragOver(e)} onDrop={(e)=>handleDrop(e)} className="h-80 w-1/2 flex flex-wrap flex-col items-center rounded-3xl border-2 border-gray-400 mt-10 mr-20">
                     {selectedCourses.map((c, index) => 
-                        <div className='w-full rounded-3xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2 text-center' key={index}>
-                            {c}
+                        <div className='flex justify-between w-full rounded-3xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2 text-center' key={index}>
+                            <div className='ml-4'>{c}</div>
+                            <button onClick={()=>handleRemoveSelected(c)} className='flex-row text-red-700 mr-4'>X</button>
                         </div>
                     )}
                 </div>
