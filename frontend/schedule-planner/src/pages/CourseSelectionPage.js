@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 
 function CourseSelectionPage() {
     const [course, setCourse] = useState("");       //keeps track of inputed course
-    const [courseList, setCourseList] = useState([]);
-    const [selectedCourses, setSelectedCourses] = useState([]);
+    const [courseList, setCourseList] = useState([]);   //keeps track of all entered courses
+    const [selectedCourses, setSelectedCourses] = useState([]);     //keeps track of all selected courses
 
     const handleSubmitClick = (e) => {       //handles when submit button pressed, adds course to box underneath
         const currentCourse={course}
@@ -27,12 +27,12 @@ function CourseSelectionPage() {
         e.dataTransfer.setData("courseID", c)
     }
 
-    const handleRemoveSelected = (c) => {
+    const handleRemoveSelected = (c) => {       //handle removing course from selected list
         const newCourseList = selectedCourses.filter((l)=>l !== c)
         setSelectedCourses(newCourseList)
     }
 
-    const handleDragOver = (e) => {  
+    const handleDragOver = (e) => {         //prevents default when dragging over
         e.preventDefault();
     }
 
