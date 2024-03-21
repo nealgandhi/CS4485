@@ -6,6 +6,7 @@ import Login from './pages/LoginPage';
 import Footer from './components/Footer';
 import CalendarPage from './pages/CalendarPage';
 // import UploadTranscript from './components/TranscriptUpload';
+import AboutUsPage from './pages/AboutUsPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
           {/* <Route path="/uploadTranscript" element={<UploadTranscript/>}/> */}
+          <Route path="/aboutus" element={<AboutUsPage />} />
         </Routes>
       </BrowserRouter>
       <Footer/>
