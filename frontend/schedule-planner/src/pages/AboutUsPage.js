@@ -4,7 +4,7 @@ import * as React from 'react'
 function AboutUs() {
     return (
         <div className="flex flex-col">
-            <div className="flex flex-row w-screen">
+            <div className="flex flex-row">
                 <div className="absolute w-full text-center text-5xl font-semibold mt-40">
                     About Us
                 </div>
@@ -36,31 +36,36 @@ function AboutUs() {
                 </div>
                 <img src="homepage.png" alt="homepage" className="w-4/12 lg:w-5/12"/>
             </div>
-            <div className='flex flex-row w-full justify-center gap-2'>
+            <div className='flex flex-row w-auto justify-between ml-20 mr-20 mb-10'>
                 <Blurb 
                     className=""
                     name={"Neal Gandhi"}
                     responsibility={"Full Stack Developer"}
+                    img={""}
                 />
                 <Blurb 
                     className=""
                     name={"Kirin Chhikara"}
                     responsibility={"API Developer"}
+                    img={""}
                 />
                 <Blurb 
                     className=""
                     name={"Reese Hoffart"}
                     responsibility={"Database Admin"}
+                    img={""}
                 />
                 <Blurb 
                     className=""
                     name={"Ahmed Sheikh"}
                     responsibility={"Frontend Developer"}
+                    img={""}
                 />
                 <Blurb 
                     className=""
                     name={"Yara Jandal"}
                     responsibility={"Full Stack Developer"}
+                    img={""}
                 />
             </div>
         </div>

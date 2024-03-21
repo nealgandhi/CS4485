@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-function AboutBlurb({ name, responsibility }) {
+function AboutBlurb({ name, responsibility, img }) {
     return (
         <div classname="flex flex-row justify-center items-center gap-4">
             <img src="placeholder.jpg" className='w-32 rounded-full ml-2' alt="team member headshot"/>
-            <div className='flex flex-col w-36 items-center mt-4'>
+            <div className='flex flex-col w-36 h-20 items-center mt-4'>
                 <div>
                     {name}
                 </div>
