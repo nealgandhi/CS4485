@@ -1,4 +1,5 @@
 import Blurb from '../components/AboutBlurb'
+import * as React from 'react'
 
 function AboutUs() {
     return (
@@ -10,7 +11,7 @@ function AboutUs() {
                 <img src="upperRightDec.png" alt="decoration" className="flex ms-auto w-1/2 lg:w-4/12"/>
             </div>
             <div className="flex flex-row mb-32 ml-10 mr-10">
-                <img src="utdBanner.jpg" alt='UTD banner' className="w-96 lg:w-5/12"/>
+                <img src="utdBanner.jpg" alt='UTD banner' className="w-80 lg:w-5/12"/>
                 <div className="flex flex-col ml-10 justify-center items-center">
                     <div className="font-medium text-lg text-black">
                         Our team
@@ -35,8 +36,32 @@ function AboutUs() {
                 </div>
                 <img src="homepage.png" alt="homepage" className="w-4/12 lg:w-5/12"/>
             </div>
-            <div>
-                <Blurb />
+            <div className='flex flex-row w-full justify-center gap-2'>
+                <Blurb 
+                    className=""
+                    name={"Neal Gandhi"}
+                    responsibility={"Full Stack Developer"}
+                />
+                <Blurb 
+                    className=""
+                    name={"Kirin Chhikara"}
+                    responsibility={"API Developer"}
+                />
+                <Blurb 
+                    className=""
+                    name={"Reese Hoffart"}
+                    responsibility={"Database Admin"}
+                />
+                <Blurb 
+                    className=""
+                    name={"Ahmed Sheikh"}
+                    responsibility={"Frontend Developer"}
+                />
+                <Blurb 
+                    className=""
+                    name={"Yara Jandal"}
+                    responsibility={"Full Stack Developer"}
+                />
             </div>
         </div>
     )
