@@ -7,7 +7,7 @@ function Footer() {
                 color: "white",
                 padding: "5px",
                 position: "flex",
-                width: "100vw",
+                width: "100%",
                 bottom: 0,
             }}
             className='text-center bg-theme-navy'

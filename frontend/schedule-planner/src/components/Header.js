@@ -8,7 +8,7 @@ function Header() {
                 color: "white",
                 padding: "5px",
                 position: "absolute",
-                width: "100vw"
+                width: "100%"
             }}
             className='bg-theme-navy grid-rows-4 gap-4'
         >
