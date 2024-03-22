@@ -6,7 +6,7 @@ type Course2 struct {
 }
 
 type CourseInfo struct {
-	Id int `json:"id"`
+	Id string `json:"id"`
 	Prefix string `json:"prefix"`
 	Number int `json:"number"`
 	Name string `json:"name"`
