@@ -36,7 +36,7 @@ function AboutUs() {
                 </div>
                 <img src="homepage.png" alt="homepage" className="w-4/12 lg:w-5/12"/>
             </div>
-            <div className='flex flex-row w-auto justify-between ml-20 mr-20 mb-10'>
+            <div className='flex flex-row w-auto justify-between ml-4 lg:ml-20 mr-20 mb-10'>
                 <Blurb 
                     className=""
                     name={"Neal Gandhi"}
