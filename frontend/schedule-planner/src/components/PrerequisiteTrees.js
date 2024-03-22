@@ -75,39 +75,50 @@ function PrerequisiteTrees(){
         animationDuration: 1000,
         avoidOverlap: true,
         nodeDimensionsIncludeLabels: false,
-        rankDir: 'BT'
+        rankDir: 'BT',
+        
     };
 
     let myCyRef;
     return (
-        <div style={{
-            paddingTop: "5vh",
+      <div
+      style={{
+        paddingTop: "7vh",
+        paddingBottom: "7vh",
         }}>
-           <CytoscapeComponent
-                elements={CytoscapeComponent.normalizeElements(graphData)}
-                // pan={{ x: 200, y: 200 }}
-                style={{ width: width, height: height }}
-                zoomingEnabled={true}
-                maxZoom={3}
-                minZoom={0.1}
-                autounselectify={false}
-                boxSelectionEnabled={true}
-                layout={layout}
-                stylesheet={styleSheet}
-                cy={cy => {
-                myCyRef = cy;
+          <div style={{
+              paddingTop: "5vh",
+              paddingLeft: "5vw",
+              paddingRight: "5vw",
+              borderStyle: "solid",
+              borderColor: "black"
+          }}>
+            <CytoscapeComponent
+                  elements={CytoscapeComponent.normalizeElements(graphData)}
+                  // pan={{ x: 200, y: 200 }}
+                  style={{ width: width, height: height }}
+                  zoomingEnabled={true}
+                  maxZoom={3}
+                  minZoom={0.1}
+                  autounselectify={false}
+                  boxSelectionEnabled={true}
+                  layout={layout}
+                  stylesheet={styleSheet}
+                  cy={cy => {
+                  myCyRef = cy;
 
-                console.log("EVT", cy);
+                  console.log("EVT", cy);
 
-                cy.on("tap", "node", evt => {
-                    var node = evt.target;
-                    console.log("EVT", evt);
-                    console.log("TARGET", node.data());
-                    console.log("TARGET TYPE", typeof node[0]);
-                });
-                }}
-            abc={console.log("myCyRef", myCyRef)}
-          />
+                  cy.on("tap", "node", evt => {
+                      var node = evt.target;
+                      console.log("EVT", evt);
+                      console.log("TARGET", node.data());
+                      console.log("TARGET TYPE", typeof node[0]);
+                  });
+                  }}
+              abc={console.log("myCyRef", myCyRef)}
+            />
+          </div>
         </div>
     );
 }

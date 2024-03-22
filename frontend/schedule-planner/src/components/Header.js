@@ -7,8 +7,9 @@ function Header() {
             style={{
                 color: "white",
                 padding: "5px",
-                position: "absolute",
-                width: "100vw"
+                position: "flex",
+                width: "100vw",
+                top: 0,
             }}
             className='bg-theme-navy grid-rows-4 gap-4'
         >
