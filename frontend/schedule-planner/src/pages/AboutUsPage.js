@@ -41,31 +41,31 @@ function AboutUs() {
                     className=""
                     name={"Neal Gandhi"}
                     responsibility={"Full Stack Developer"}
-                    img={""}
+                    img={"neal_about.png"}
                 />
                 <Blurb 
                     className=""
                     name={"Kirin Chhikara"}
                     responsibility={"API Developer"}
-                    img={""}
+                    img={"kirin_about.png"}
                 />
                 <Blurb 
                     className=""
                     name={"Reese Hoffart"}
                     responsibility={"Database Admin"}
-                    img={""}
+                    img={"reese_about.png"}
                 />
                 <Blurb 
                     className=""
                     name={"Ahmed Sheikh"}
                     responsibility={"Frontend Developer"}
-                    img={""}
+                    img={"ahmed_about.jpg"}
                 />
                 <Blurb 
                     className=""
                     name={"Yara Jandal"}
                     responsibility={"Full Stack Developer"}
-                    img={""}
+                    img={"yara_about.png"}
                 />
             </div>
         </div>
