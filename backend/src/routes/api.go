@@ -1,11 +1,10 @@
 package routes
 
 import (
-
 	"net/http"
-	"github.com/gin-gonic/gin"
-	"github.com/capstone/backend/src/controllers"
 
+	"github.com/capstone/backend/src/controllers"
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRoutes() *gin.Engine {
@@ -20,6 +19,7 @@ func SetupRoutes() *gin.Engine {
 
 	router.GET("/get/course/:cprefix/:cnumber/info", controllers.GetInfo)
 
+	http.HandleFunc("/get/test", controllers.GetInfoTest)
+
 	return router
 }
-

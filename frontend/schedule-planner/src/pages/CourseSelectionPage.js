@@ -4,12 +4,24 @@ function CourseSelectionPage() {
     const [course, setCourse] = useState("");       //keeps track of inputed course
     const [courseList, setCourseList] = useState([]);   //keeps track of all entered courses
     const [selectedCourses, setSelectedCourses] = useState([]);     //keeps track of all selected courses
+    const [duplicate, setDuplicate] = useState()
 
     const handleSubmitClick = (e) => {       //handles when submit button pressed, adds course to box underneath
         const currentCourse={course}
         if(course){
+            courseList.forEach((a)=>           //Tests for duplicates
+                {if(a.course === currentCourse.course) {
+                    setDuplicate(true)
+                }}
+            )
+            if(duplicate) {
+                alert("That class is already in your list.")
+                setDuplicate(false)
+                return handleSubmitClick
+            } 
             setCourseList((ls)=>[...ls,currentCourse])
             setCourse("")
+            setDuplicate(false)
         }
         else{
             alert("Input box is empty. Please enter the course number you wish to search.")
