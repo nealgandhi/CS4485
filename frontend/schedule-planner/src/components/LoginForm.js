@@ -1,6 +1,25 @@
-import * as React from 'react';
+import React, { useState } from 'react'
 
 function LoginForm() {
+    const [netID, setNetID] = useState("")
+    const [pass, setPass] = useState("")
+    const [rememberBox, setRememberBox] = useState(false)
+
+    const idInput = event => {   //handle when input is changing (allows user to type in input)
+        setNetID(event.target.value);
+    }
+    const passInput = event => { 
+        setPass(event.target.value);
+    }
+    const boxCheck = () => {
+        if(!rememberBox) {
+            setRememberBox(true)
+        }
+        else {
+            setRememberBox(false)
+        }
+    }
+
     return (
         <div className='w-3/4 lg:w-1/2 bg-white px-10 py-5 rounded-3xl border-2 border-blue-800'>
             <h1 className='text-5xl font-semibold'>Login</h1>
@@ -11,6 +30,8 @@ function LoginForm() {
                     <input
                         className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
                         placeholder='Enter your NetID'
+                        value={netID}
+                        onChange={idInput}
                      />
                 </div>
                 <div className='flex flex-col'>
@@ -19,6 +40,8 @@ function LoginForm() {
                         className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
                         placeholder='Enter your password'
                         type="password"
+                        value={pass}
+                        onChange={passInput}
                      />
                 </div>
                 <div className='mt-8 flex justify-between items-center'>
@@ -26,6 +49,8 @@ function LoginForm() {
                         <input 
                             type="checkbox"
                             id='remember'
+                            value={rememberBox}
+                            onChange={boxCheck}
                         />
                         <label className='ml-1 font-medium text-base' for='remember'>Remember me for 30 days</label>
                     </div>
