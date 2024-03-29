@@ -8,6 +8,7 @@ import CalendarPage from './pages/CalendarPage';
 import CourseSelectionPage from './pages/CourseSelectionPage';
 // import UploadTranscript from './components/TranscriptUpload';
 import AboutUsPage from './pages/AboutUsPage';
+import Signup from './pages/SignupPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/signup" element={<Signup/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
           <Route path="/courseSelection" element={<CourseSelectionPage/> } />
           {/* <Route path="/uploadTranscript" element={<UploadTranscript/>}/> */}
