@@ -3,18 +3,32 @@ import React, {useState} from 'react'
 function CourseInformationPage() {
     const [prefix, setPre] = useState('')
     const [number, setNum] = useState('')
+    const [course, setCourse] = useState()
     
-    const getInfo = async(p, n) => {
-        const r = await fetch("http://localhost:8080/get/course/cs/2300/info");
-        const m = await r.json();
-        console.log(m);
-    }
-
     const preInput = event => {   //handle when course input is changing (allows user to type in input)
         setPre(event.target.value);
     }
     const numInput = event => {   //handle when course input is changing (allows user to type in input)
         setNum(event.target.value);
+    }
+    
+    const getInfo = async() => {
+        console.log(prefix, number)
+        setPre(prefix)
+        setNum(number)
+        try {
+            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
+            if(!r.ok) {
+                throw new Error('class not found')
+            }
+            const m = await r.json();
+            setCourse(m.info)
+            console.log(course.name)
+            
+        }
+        catch(error) {
+            alert("Class not found. Please enter another.")
+        }
     }
 
     return (
@@ -34,7 +48,7 @@ function CourseInformationPage() {
                     name='number'
                     onChange={numInput}
                 />
-                <button title='get' onClick={() => getInfo(prefix, number)} className=''>Press</button>
+                <button title='get' onClick={() => getInfo()} className=''>Press</button>
             </div>
         </div>
     )

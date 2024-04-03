@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
@@ -57,10 +56,13 @@ func GetInfo(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"info": cinfo})
-}
+	classID := &cinfo.Id //Tests if class exists in databse and outputs error 401 if not
+	log.Println(classID)
+	if *classID == "" {
+		c.AbortWithStatus(401)
+		log.Println("Error 401: Class inputted not found in the database. Check your data and query.")
+		return
+	}
 
-func GetInfoTest(w http.ResponseWriter, r *http.Request) {
-	response := models.Course2{Prefix: "cs", Number: 1200}
-	json.NewEncoder(w).Encode(response)
+	c.JSON(http.StatusOK, gin.H{"info": cinfo})
 }
