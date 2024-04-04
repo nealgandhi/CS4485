@@ -13,13 +13,18 @@ function CourseInformationPage() {
     }
     
     const getInfo = async() => {
+        console.log(prefix, number)
+        setPre(prefix)
+        setNum(number)
         try {
             const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
             if(!r.ok) {
                 throw new Error('class not found')
             }
             const m = await r.json();
-            setCourse(m.info)            
+            setCourse(m.info)
+            console.log(course.name)
+            
         }
         catch(error) {
             alert("Class not found. Please enter another.")
@@ -27,7 +32,7 @@ function CourseInformationPage() {
     }
 
     return (
-        <div className='flex flex-col h-screen ml-10'>
+        <div className='flex flex-row h-screen ml-10'>
             <div className='flex flex-col mb-40 mt-40 w-screen'>
                 <input
                     className='w-1/2 border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
@@ -44,9 +49,6 @@ function CourseInformationPage() {
                     onChange={numInput}
                 />
                 <button title='get' onClick={() => getInfo()} className=''>Press</button>
-            </div>
-            <div className='flex border-2'>
-                {course.name}
             </div>
         </div>
     )

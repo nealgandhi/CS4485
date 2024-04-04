@@ -1,52 +1,34 @@
 import React, { useState } from 'react'
 
 function CourseSelectionPage() {
-    const [prefix, setPrefix] = useState("");       //keeps track of inputed course prefix
-    const [number, setNumber] = useState("");       //keeps track of inputed course number
-    const [course, setCourse] = useState("");
+    const [course, setCourse] = useState("");       //keeps track of inputed course
     const [courseList, setCourseList] = useState([]);   //keeps track of all entered courses
     const [selectedCourses, setSelectedCourses] = useState([]);     //keeps track of all selected courses
+    const [duplicate, setDuplicate] = useState()
 
-    const handleSearchClick = async() => {       //handles when submit button pressed, adds course to box underneath
-        try {
-            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
-            if(!r.ok) {
-                throw new Error('class not found')
-            }
-            const m = await r.json();
-            setCourse(m.info.id)
-            return(m.info.id)    
-            // const currentCourse={course}
-            // console.log(course)
-            // if(course){
-            //     setCourseList((ls)=>[...ls,currentCourse])
-            //     setCourse("")
-            // }
-            // else {
-            // }
+    const handleSubmitClick = (e) => {       //handles when submit button pressed, adds course to box underneath
+        const currentCourse={course}
+        if(course){
+            courseList.forEach((a)=>           //Tests for duplicates
+                {if(a.course === currentCourse.course) {
+                    setDuplicate(true)
+                }}
+            )
+            if(duplicate) {
+                alert("That class is already in your list.")
+                setDuplicate(false)
+                return handleSubmitClick
+            } 
+            setCourseList((ls)=>[...ls,currentCourse])
+            setCourse("")
+            setDuplicate(false)
         }
-        catch(error) {
-            alert("Class not found. Please enter another.")
+        else{
+            alert("Input box is empty. Please enter the course number you wish to search.")
         }
     }
-    const test = async() => {
-        const currentCourse= await handleSearchClick()
-            console.log(currentCourse)
-            if(course){
-                console.log("pass")
-                setCourseList((ls)=>[...ls,currentCourse])
-                setCourse("")
-            }
-            else {
-                console.log("fail")
-            }
-    }
-
-    const prefixInput = event => {   //handle when course input is changing (allows user to type in input)
-        setPrefix(event.target.value);
-    }
-    const numberInput = event => {   //handle when course input is changing (allows user to type in input)
-        setNumber(event.target.value);
+    const courseInput = event => {   //handle when course input is changing (allows user to type in input)
+        setCourse(event.target.value);
     }
     const handleRemoveClick = (c) => {       //handle X button when removing inputted course
         const newList = courseList.filter((l)=>l.course !== c);
@@ -72,7 +54,7 @@ function CourseSelectionPage() {
     }
     
     return (
-        <div className="flex flex-col h-auto ml-10 mb-10">
+        <div className="flex flex-col h-screen ml-10">
             <div className="mt-16 w-3/4">
                 <h1 className="text-3xl font-semibold">Select your courses</h1>
                 <p className="mt-4">Type in the courses that you would like to add to your schedule below. You can add onto these later if you wish.</p>
