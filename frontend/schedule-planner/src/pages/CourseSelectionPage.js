@@ -19,7 +19,7 @@ function CourseSelectionPage() {
             setCourseList((ls)=>[...ls,currentCourse])
         }
         catch(error) {
-            alert("Class not found. Please enter another.")
+            alert("Class not found. Please check the class prefix and number again.")
         }
     }
     const handleGenerateClick = async() => {        //sends data to api to generate schedule
