@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/capstone/backend/src/models"
 	"github.com/capstone/backend/src/utils"
@@ -65,4 +66,81 @@ func GetInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"info": cinfo})
+}
+
+func VerifySemesterCourseEligibility(c *gin.Context) {
+	userEmail := c.Param("email")
+	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
+
+	results, err := utils.DB.Query("SELECT Count(Prereqs.prereq_id) FROM Prereqs, UserPlan WHERE Prereqs.course_id=UserPlan.course_id AND UserPlan.email=\""+userEmail+"\" AND UserPlan.semester=\""+semester+"\" AND Prereqs.prereq_id NOT IN (SELECT UserPlan.course_id FROM UserPlan WHERE semester < \""+semester+"\")")
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+		return
+	}
+
+	type countResponse struct {
+		count int
+	}
+	var structResponse countResponse
+	for results.Next() {
+		err = results.Scan(&structResponse.count)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	if structResponse.count == 0 {
+		c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester":semester, "eligible":1})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester":semester, "eligible":0})
+}
+
+func GetUserSemesterCourses(c *gin.Context) {
+	userEmail := c.Param("email")
+	semester := c.Param("semester")
+
+	results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\""+userEmail+"\" and semester=\""+semester+"\"")
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+		return
+	}
+
+	type courseId struct {CourseId string `json:"courseID"`}
+	var semesterCourses []courseId
+
+	for results.Next() {
+		var row courseId
+		err = results.Scan(&row.CourseId)
+		if err != nil {
+			panic(err.Error())
+		}
+		semesterCourses = append(semesterCourses, row)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"email":userEmail, "semester":semester, "courses": semesterCourses})
+
+}
+
+// Expects post data like: courses=cs1111,cs2222,cs3333,etc
+func AddUserSemesterCourses(c *gin.Context) {
+	userEmail := c.Param("email")
+	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
+	courses := strings.Split(c.PostForm("courses"), ",")
+
+	sqlInsertString := "INSERT INTO UserPlan VALUES "
+	for i, s := range courses {
+		sqlInsertString += "(\""+userEmail+"\",\""+semester+"\",\""+s+"\")"
+		if i < len(courses)-1 {
+			sqlInsertString += ","
+		}
+	}
+	_, err := utils.DB.Query(sqlInsertString)
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Panicln(err)
+		return
+	}
 }
