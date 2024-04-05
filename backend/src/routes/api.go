@@ -22,6 +22,7 @@ func SetupRoutes() *gin.Engine {
 
 	router.GET("/get/user/:email/semester/:semester/courses", controllers.GetUserSemesterCourses)
 	router.POST("/post/user/:email/semester/:semester/courses", controllers.AddUserSemesterCourses)
+	router.POST("/delete/user/:email/semester/:semester/courses", controllers.RemoveUserSemesterCourses)
 
 	router.GET("/get/user/:email/semester/:semester/courseeligibility", controllers.VerifySemesterCourseEligibility)
 
