@@ -49,6 +49,7 @@ function CourseInformationPage() {
                     onChange={numInput}
                 />
                 <button title='get' onClick={() => getInfo()} className=''>Press</button>
+                <div>{course.name}</div>
             </div>
         </div>
     )
