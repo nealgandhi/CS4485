@@ -20,6 +20,11 @@ func SetupRoutes() *gin.Engine {
 
 	router.GET("/get/course/:cprefix/:cnumber/info", controllers.GetInfo)
 
+	router.GET("/get/user/:email/semester/:semester/courses", controllers.GetUserSemesterCourses)
+	router.POST("/post/user/:email/semester/:semester/courses", controllers.AddUserSemesterCourses)
+
+	router.GET("/get/user/:email/semester/:semester/courseeligibility", controllers.VerifySemesterCourseEligibility)
+
 	http.ListenAndServe(":8080",
 		handlers.CORS(
 			handlers.AllowedOrigins([]string{"*"}),
