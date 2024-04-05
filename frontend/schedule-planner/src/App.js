@@ -9,6 +9,7 @@ import CourseSelectionPage from './pages/CourseSelectionPage';
 // import CourseInformationPage from './pages/CourseInformationPage'
 // import UploadTranscript from './components/TranscriptUpload';
 import AboutUsPage from './pages/AboutUsPage';
+import Signup from './pages/SignupPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/signup" element={<Signup/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
           <Route path="/courseSelection" element={<CourseSelectionPage/> } />
           {/* <Route path='/cip' element={<CourseInformationPage/>} /> */}
