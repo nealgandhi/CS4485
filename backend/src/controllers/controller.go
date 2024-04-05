@@ -144,3 +144,26 @@ func AddUserSemesterCourses(c *gin.Context) {
 		return
 	}
 }
+
+// Expects post data like: courses=cs1111,cs2222,cs3333,etc
+func RemoveUserSemesterCourses(c *gin.Context) {
+	userEmail := c.Param("email")
+	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
+	courses := strings.Split(c.PostForm("courses"), ",")
+
+	sqlDeleteString := "DELETE FROM UserPlan WHERE email=\""+userEmail+"\" AND semester=\""+semester+"\" AND course_id IN ("
+	for i, s := range courses {
+		sqlDeleteString += "\""+s+"\""
+		if i < len(courses)-1 {
+			sqlDeleteString += ","
+		}
+	}
+	sqlDeleteString += ")"
+
+	_, err := utils.DB.Query(sqlDeleteString)
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Panicln(err)
+		return
+	}
+}
