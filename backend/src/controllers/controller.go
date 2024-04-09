@@ -187,9 +187,8 @@ func AddUser(c *gin.Context) {
 
 func GetUser(c *gin.Context) {
 	userEmail := c.Param("email")
-	id := c.Param("id")
 
-	results, err := utils.DB.Query("SELECT email, degree_id FROM Users WHERE email=\"" + userEmail + "\" AND degree_id=\"" + id + "\"")
+	results, err := utils.DB.Query("SELECT email, degree_id FROM Users WHERE email=\"" + userEmail + "\"")
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
