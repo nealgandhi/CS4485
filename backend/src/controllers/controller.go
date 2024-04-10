@@ -72,7 +72,8 @@ func VerifySemesterCourseEligibility(c *gin.Context) {
 	userEmail := c.Param("email")
 	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
 
-	results, err := utils.DB.Query("SELECT Count(Prereqs.prereq_id) FROM Prereqs, UserPlan WHERE Prereqs.course_id=UserPlan.course_id AND UserPlan.email=\""+userEmail+"\" AND UserPlan.semester=\""+semester+"\" AND Prereqs.prereq_id NOT IN (SELECT UserPlan.course_id FROM UserPlan WHERE semester < \""+semester+"\")")
+	results, err := utils.DB.Query("SELECT Count(Prereqs.prereq_id) FROM Prereqs, UserPlan WHERE Prereqs.course_id=UserPlan.course_id AND UserPlan.email=\"" + userEmail + "\" AND UserPlan.semester=\"" + semester + "\" AND Prereqs.prereq_id NOT IN (SELECT UserPlan.course_id FROM UserPlan WHERE semester < \"" + semester + "\")")
+
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
@@ -91,24 +92,30 @@ func VerifySemesterCourseEligibility(c *gin.Context) {
 	}
 
 	if structResponse.count == 0 {
-		c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester":semester, "eligible":1})
+
+		c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "eligible": 1})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester":semester, "eligible":0})
+	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "eligible": 0})
 }
 
 func GetUserSemesterCourses(c *gin.Context) {
 	userEmail := c.Param("email")
 	semester := c.Param("semester")
 
-	results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\""+userEmail+"\" and semester=\""+semester+"\"")
+	results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
+
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
 		return
 	}
 
-	type courseId struct {CourseId string `json:"courseID"`}
+
+	type courseId struct {
+		CourseId string `json:"courseID"`
+	}
+
 	var semesterCourses []courseId
 
 	for results.Next() {
@@ -120,7 +127,7 @@ func GetUserSemesterCourses(c *gin.Context) {
 		semesterCourses = append(semesterCourses, row)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"email":userEmail, "semester":semester, "courses": semesterCourses})
+	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "courses": semesterCourses})
 
 }
 
@@ -132,7 +139,9 @@ func AddUserSemesterCourses(c *gin.Context) {
 
 	sqlInsertString := "INSERT INTO UserPlan VALUES "
 	for i, s := range courses {
-		sqlInsertString += "(\""+userEmail+"\",\""+semester+"\",\""+s+"\")"
+
+		sqlInsertString += "(\"" + userEmail + "\",\"" + semester + "\",\"" + s + "\")"
+
 		if i < len(courses)-1 {
 			sqlInsertString += ","
 		}
@@ -151,14 +160,75 @@ func RemoveUserSemesterCourses(c *gin.Context) {
 	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
 	courses := strings.Split(c.PostForm("courses"), ",")
 
-	sqlDeleteString := "DELETE FROM UserPlan WHERE email=\""+userEmail+"\" AND semester=\""+semester+"\" AND course_id IN ("
+	sqlDeleteString := "DELETE FROM UserPlan WHERE email=\"" + userEmail + "\" AND semester=\"" + semester + "\" AND course_id IN ("
 	for i, s := range courses {
-		sqlDeleteString += "\""+s+"\""
+		sqlDeleteString += "\"" + s + "\""
 		if i < len(courses)-1 {
 			sqlDeleteString += ","
 		}
 	}
 	sqlDeleteString += ")"
+
+	_, err := utils.DB.Query(sqlDeleteString)
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Panicln(err)
+		return
+	}
+}
+
+// inserts user into DB with email and degree id
+func AddUser(c *gin.Context) {
+	userEmail := c.Param("email")
+	id := c.Param("id")
+	pw := c.Param("password")
+
+	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + pw + "\")"
+
+	_, err := utils.DB.Query(sqlInsertString)
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Panicln(err)
+		return
+	}
+}
+
+func GetUser(c *gin.Context) {
+	userEmail := c.Param("email")
+
+	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+		return
+	}
+
+	var uinfo models.UserInfo
+
+	for results.Next() {
+
+		err = results.Scan(&uinfo.Email, &uinfo.Id, &uinfo.Password)
+		if err != nil {
+			panic(err.Error())
+		}
+
+	}
+
+	uEmail := &uinfo.Email //Tests if user exists in databse and outputs error 401 if not
+	if *uEmail == "" {
+		c.AbortWithStatus(401)
+		log.Println("Error 401: User not found in the database. Check your data and query.")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"info": uinfo})
+}
+
+func RemoveUser(c *gin.Context) {
+	userEmail := c.Param("email")
+	pw := c.Param("password")
+
+	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\" AND password=\"" + pw + "\""
 
 	_, err := utils.DB.Query(sqlDeleteString)
 	if err != nil {
