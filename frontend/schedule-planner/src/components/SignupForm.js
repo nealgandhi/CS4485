@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Navigate } from "react-router-dom"
 
 function SignupForm() {
     // const [netID, setNetID] = useState("")
@@ -8,6 +9,7 @@ function SignupForm() {
     const [pass, setPass] = useState("")
     const [confirmPass, setConfirmPass] = useState("")
     const [degreeID, setDegreeID] = useState()
+    const [goToLogin, setGoToLogin] = useState(false)
 
     // const idInput = event => {   //handle when input is changing (allows user to type in input)
     //     setNetID(event.target.value);
@@ -49,10 +51,16 @@ function SignupForm() {
             if(!r.ok) {
                 throw new Error('newUserDenied')
             }
+            setGoToLogin(true)
+            alert("User has been added, please input login information below.")
         }
         catch(error) {
             alert("User could not be added.")
         }
+    }
+
+    if(goToLogin) {
+        return <Navigate to="/login" />
     }
     
     return (
