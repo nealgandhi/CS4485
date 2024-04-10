@@ -27,7 +27,7 @@ func SetupRoutes() *gin.Engine {
 	router.GET("/get/user/:email/semester/:semester/courseeligibility", controllers.VerifySemesterCourseEligibility)
 
 	router.POST("/post/user/:email/degree/:id/password/:password", controllers.AddUser)
-	router.GET("/get/user/:email", controllers.GetUser)
+	router.GET("/get/user/:email/password/:password", controllers.GetUser)
 	router.POST("/delete/user/:email/password/:password", controllers.RemoveUser)
 
 	http.ListenAndServe(":8080",

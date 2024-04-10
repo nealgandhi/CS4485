@@ -14,7 +14,6 @@ function CourseSelectionPage() {
                 throw new Error('class not found')
             }
             const m = await r.json();
-            // setCourse(m.info.id)
             const currentCourse = m.info.id
             setCourseList((ls)=>[...ls,currentCourse])
         }
