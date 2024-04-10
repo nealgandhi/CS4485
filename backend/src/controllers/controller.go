@@ -174,8 +174,9 @@ func RemoveUserSemesterCourses(c *gin.Context) {
 func AddUser(c *gin.Context) {
 	userEmail := c.Param("email")
 	id := c.Param("id")
+	pw := c.Param("password")
 
-	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\")"
+	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + pw + "\")"
 
 	_, err := utils.DB.Query(sqlInsertString)
 	if err != nil {
@@ -188,7 +189,7 @@ func AddUser(c *gin.Context) {
 func GetUser(c *gin.Context) {
 	userEmail := c.Param("email")
 
-	results, err := utils.DB.Query("SELECT email, degree_id FROM Users WHERE email=\"" + userEmail + "\"")
+	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
@@ -199,7 +200,7 @@ func GetUser(c *gin.Context) {
 
 	for results.Next() {
 
-		err = results.Scan(&uinfo.Email, &uinfo.Id)
+		err = results.Scan(&uinfo.Email, &uinfo.Id, &uinfo.Password)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -214,4 +215,18 @@ func GetUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"info": uinfo})
+}
+
+func RemoveUser(c *gin.Context) {
+	userEmail := c.Param("email")
+	pw := c.Param("password")
+
+	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\" AND password=\"" + pw + "\""
+
+	_, err := utils.DB.Query(sqlDeleteString)
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Panicln(err)
+		return
+	}
 }

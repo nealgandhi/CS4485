@@ -18,6 +18,7 @@ type CourseInfo struct {
 }
 
 type UserInfo struct {
-	Email string `json:"email"`
-	Id    string `json:"id"`
+	Email    string `json:"email"`
+	Id       string `json:"id"`
+	Password string `json:"password"`
 }
