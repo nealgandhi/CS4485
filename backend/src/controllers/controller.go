@@ -73,6 +73,7 @@ func VerifySemesterCourseEligibility(c *gin.Context) {
 	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
 
 	results, err := utils.DB.Query("SELECT Count(Prereqs.prereq_id) FROM Prereqs, UserPlan WHERE Prereqs.course_id=UserPlan.course_id AND UserPlan.email=\"" + userEmail + "\" AND UserPlan.semester=\"" + semester + "\" AND Prereqs.prereq_id NOT IN (SELECT UserPlan.course_id FROM UserPlan WHERE semester < \"" + semester + "\")")
+
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
@@ -91,6 +92,7 @@ func VerifySemesterCourseEligibility(c *gin.Context) {
 	}
 
 	if structResponse.count == 0 {
+
 		c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "eligible": 1})
 		return
 	}
@@ -102,15 +104,18 @@ func GetUserSemesterCourses(c *gin.Context) {
 	semester := c.Param("semester")
 
 	results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
+
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
 		return
 	}
 
+
 	type courseId struct {
 		CourseId string `json:"courseID"`
 	}
+
 	var semesterCourses []courseId
 
 	for results.Next() {
@@ -134,7 +139,9 @@ func AddUserSemesterCourses(c *gin.Context) {
 
 	sqlInsertString := "INSERT INTO UserPlan VALUES "
 	for i, s := range courses {
+
 		sqlInsertString += "(\"" + userEmail + "\",\"" + semester + "\",\"" + s + "\")"
+
 		if i < len(courses)-1 {
 			sqlInsertString += ","
 		}
