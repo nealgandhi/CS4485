@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route, } from 'react-router-dom';
 import Login from './pages/LoginPage';
 import Footer from './components/Footer';
 import CalendarPage from './pages/CalendarPage';
+import PrerequisiteTrees from './components/PrerequisiteTrees';
+
 import CourseSelectionPage from './pages/CourseSelectionPage';
 // import CourseInformationPage from './pages/CourseInformationPage'
 // import UploadTranscript from './components/TranscriptUpload';
@@ -22,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
+          <Route path="/prerequisites" element={<PrerequisiteTrees/>}/>
           <Route path="/courseSelection" element={<CourseSelectionPage/> } />
           {/* <Route path='/cip' element={<CourseInformationPage/>} /> */}
           {/* <Route path="/uploadTranscript" element={<UploadTranscript/>}/> */}
