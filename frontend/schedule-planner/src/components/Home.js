@@ -29,7 +29,7 @@ function Home() {
                     </div>
                     <div className='pb-16'>
                         <div class="duration-300 hover:shadow-xl">
-                            <img style={{width: "100vw", height: "100%"}}src="./UTD.jpg"/>
+                            <img style={{width: "100vw", height: "100%"}}src="./UTD.jpg" alt="The UTD mall with a student walking by"/>
                         </div>
                     </div>
                 </div>

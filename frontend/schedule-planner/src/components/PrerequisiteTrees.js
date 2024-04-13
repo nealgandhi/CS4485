@@ -16,6 +16,8 @@ function PrerequisiteTrees(){
         nodes: data.nodes,
         edges: data.edges
     });
+    
+    const [zoom, SetZoom] = useState();
     const styleSheet = [
         {
           selector: "node",
@@ -83,21 +85,22 @@ function PrerequisiteTrees(){
     return (
       <div
       style={{
-        paddingTop: "7vh",
-        paddingBottom: "7vh",
+        paddingTop: "8vh",
+        paddingBottom: "8vh",
+        paddingRight: "8vw",
+        paddingLeft: "8vw"
         }}>
-          <div style={{
-              paddingTop: "5vh",
-              paddingLeft: "5vw",
-              paddingRight: "5vw",
-              borderStyle: "solid",
-              borderColor: "black"
-          }}>
+
+          <button class="pr-8" onClick={()=>SetZoom(zoom + .05)}>zoom in</button>
+          <button class="pr-8" onClick={()=>SetZoom(zoom - .05)}>zoom out</button>
+          <button class="pr-8" onClick={()=>SetZoom(1.5)}>reset zoom</button>
+          <div class="w-full border-4 border-gray-400 rounded-2xl pr-4 pl-4">
             <CytoscapeComponent
                   elements={CytoscapeComponent.normalizeElements(graphData)}
                   // pan={{ x: 200, y: 200 }}
                   style={{ width: width, height: height }}
-                  zoomingEnabled={true}
+                  zoomingEnabled={true} 
+                  zoom={zoom} 
                   maxZoom={3}
                   minZoom={0.1}
                   autounselectify={false}

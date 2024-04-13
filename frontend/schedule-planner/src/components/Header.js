@@ -3,7 +3,7 @@ import React from 'react';
 
 function Header() {
     return (
-        <div class="bg-white pt-4 pr-8 pb-4 pl-8">
+        <div class="bg-white pt-4 pr-8 pb-4 pl-8 ">
             <nav class="w-full">
                 <ul>
                     <div class="flex w-full justify-between max-w-screen-2xl md:flex-row mt-auto mr-auto mb-auto ml-auto ">
@@ -20,7 +20,7 @@ function Header() {
                             </a>
                         </div>
                         <div class="flex flex-row bg-white justify-center items-center md:m-0 hidden md:flex">
-                            <a href="/aboutus" fontfamily="Raleway" class="text-gray-600 text-center mr-6 font-medium text-base">About Us</a>
+                            <a href="/roadmap" fontfamily="Raleway" class="text-gray-600 text-center mr-6 font-medium text-base">Roadmap</a>
                             <a href="/login" fontfamily="Raleway" class="text-gray-600 text-center mr-6 font-medium text-lg">Log In</a>
                             <a href="/signup" fontfamily="Raleway" class="text-gray-600 text-center font-medium text-lg">Sign Up</a>
                         </div>
