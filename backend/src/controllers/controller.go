@@ -3,11 +3,14 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/capstone/backend/src/models"
 	"github.com/capstone/backend/src/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func GetPrereqs(c *gin.Context) {
@@ -111,7 +114,6 @@ func GetUserSemesterCourses(c *gin.Context) {
 		return
 	}
 
-
 	type courseId struct {
 		CourseId string `json:"courseID"`
 	}
@@ -183,6 +185,15 @@ func AddUser(c *gin.Context) {
 	id := c.Param("id")
 	pw := c.Param("password")
 
+	//encryptes pass
+	// hash, passErr := bcrypt.GenerateFromPassword([]byte(pw), 10)
+	// if passErr != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": "Failed to hash password",
+	// 	})
+	// 	return
+	// }
+
 	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + pw + "\")"
 
 	_, err := utils.DB.Query(sqlInsertString)
@@ -222,7 +233,34 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"info": uinfo})
+	//checks if hashed password matches
+	// decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
+	// if decryptError != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": "Invalid email or password",
+	// 	})
+	// 	return
+	// }
+
+	//Generate jwt token for authentication
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": uEmail,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	})
+
+	//sign and get token as string
+	tokenString, tokenErr := token.SignedString([]byte(os.Getenv("SECRETKEY")))
+	if tokenErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to create token",
+		})
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{"info": uinfo, "token": tokenString})
 }
 
 func RemoveUser(c *gin.Context) {
@@ -237,4 +275,12 @@ func RemoveUser(c *gin.Context) {
 		log.Panicln(err)
 		return
 	}
+}
+
+func Validate(c *gin.Context) {
+	user, _ := c.Get("user")
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": user.(models.UserInfo).Email,
+	})
 }

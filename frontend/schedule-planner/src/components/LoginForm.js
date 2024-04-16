@@ -33,7 +33,7 @@ function LoginForm() {
             setGoToRoadmap(true)
         }
         catch(error) {
-            alert("User not found. Email or password incorrect.")
+            alert("Email or password incorrect.")
         }
     }
 
@@ -52,6 +52,7 @@ function LoginForm() {
                         className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
                         placeholder='Enter your Email'
                         value={email}
+                        type="email"
                         onChange={emailInput}
                      />
                 </div>

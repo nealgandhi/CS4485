@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"gorm.io/gorm"
+)
 
 type Course2 struct {
 	Prefix string `json:"prefix"`
@@ -21,4 +25,11 @@ type UserInfo struct {
 	Email    string `json:"email"`
 	Id       string `json:"id"`
 	Password string `json:"password"`
+}
+
+type User struct {
+	gorm.Model
+	Email    string `gorm:"unique"`
+	Id       string
+	Password string
 }
