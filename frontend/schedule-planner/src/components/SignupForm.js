@@ -35,10 +35,29 @@ function SignupForm() {
     
     const handleSubmitClick = async() => {       //handles when submit button pressed, adds user to DB
         var id = 0
+        //error checking of fields
+        if(!email.includes("@") || !email.includes(".")) {
+            alert("Please enter valid email address.")
+            return
+        }
+        if(email.indexOf("@")+1 === email.indexOf(".")) {
+            alert("Please enter valid email address.")
+            return
+        }
+        if(pass.length < 6) {
+            alert("Password is too short. Please enter a longer password.")
+            return
+        }
+        if(!pass.includes("!") && !pass.includes("_") && !pass.includes("@") && !pass.includes("#") && !pass.includes("$")  && !pass.includes("*") && !pass.includes("?")) {
+            alert("Password does not contain one of the following special characters: !,_,@,#,$,*,?")
+            return
+        }
         if(confirmPass !== pass) {
             alert("Passwords do not match. Please type them in again.")
             return
         }
+
+        //sets the degree id for the database
         if(degreeID === "compSci") {
             id = 1
         }
