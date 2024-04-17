@@ -17,7 +17,7 @@ function CourseInformationPage() {
         setPre(prefix)
         setNum(number)
         try {
-            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
+            const r = await fetch("http://143.198.48.114:8080/get/course/" + prefix + "/" + number + "/info");
             if(!r.ok) {
                 throw new Error('class not found')
             }
