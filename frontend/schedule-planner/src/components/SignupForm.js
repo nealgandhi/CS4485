@@ -75,6 +75,7 @@ function SignupForm() {
         }
         catch(error) {
             alert("User could not be added.")
+            console.log(error)
         }
     }
 
