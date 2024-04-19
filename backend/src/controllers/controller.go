@@ -107,7 +107,7 @@ func GetUserCourses(c *gin.Context) {
 	userEmail := c.Param("email")
 	semesters := [...]string{"2024.1", "2023.3", "2023.1", "2022.3", "2022.1", "2021.3", "2021.1", "2020.3"}
 
-	reply := gin.H{"email":userEmail}
+	reply := gin.H{"email": userEmail}
 
 	for _, semester := range semesters {
 		results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")

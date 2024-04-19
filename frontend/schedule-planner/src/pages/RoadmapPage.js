@@ -11,23 +11,24 @@ function RoadmapPage({token}) {
     const [user, setUser] = useState()
     const [semesterYear, setSemesterYear] = useState("")
     const [semesterNum, setSemesterNum] = useState()
+    const [courseHistoryList, setCourseHistoryList] = useState([])
 
     useEffect(() => {
         (async() => {
-        try {
-            const token = location.state.passToken
-            const r = await fetch("http://143.198.48.114:8080/validate/" + token);
-            if(!r.ok) {
-                throw new Error('token not passed')
+            try {
+                const token = location.state.passToken
+                const r = await fetch("http://localhost:8080/validate/" + token);
+                if(!r.ok) {
+                    throw new Error('token not passed')
+                }
+                const m = await r.json();
+                console.log(m)
+                setUser(m.email)
             }
-            const m = await r.json();
-            console.log(m)
-            setUser(m.email)
-        }
-        catch(error) {
-            alert("Token not found. Please check the login.")
-            navigate('/login')
-        }
+            catch(error) {
+                alert("Token not found. Please check the login.")
+                navigate('/login')
+            }
     })()
 }, [])
     
@@ -41,7 +42,7 @@ function RoadmapPage({token}) {
             return
         }
         try {
-            const r = await fetch("http://143.198.48.114:8080/get/course/" + prefix + "/" + number + "/info");
+            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
             if(!r.ok) {
                 throw new Error('class not found')
             }
@@ -67,6 +68,7 @@ function RoadmapPage({token}) {
     const handleConfirm = async() => {
         const target = "http://localhost:8080/post/user/" + user + "/semester/" + semesterYear + "." + semesterNum + "/courses"
         var courses = getCourseList()
+        setCourseHistoryList([])
         try {
             const r = await fetch(target, {
                 method: "POST",
@@ -79,9 +81,85 @@ function RoadmapPage({token}) {
                 throw new Error('classNotAdded')
             }
             alert("Classes has been added.")
+            handleHistory()
+            setCoursesTakenList([])
         }
         catch(error) {
             alert("Classes could not be added.")
+            console.log(error)
+            handleHistory()
+            setCoursesTakenList([])
+        }
+    }
+
+    const handleHistory = async() => {
+        setCourseHistoryList([])
+        try {
+            const r = await fetch("http://localhost:8080/get/user/" + user + "/courses");
+            if(!r.ok) {
+                throw new Error(r.status)
+            }
+            const m = await r.json();
+            console.log(m)
+            if(m[2020.3] !== null) {
+                {m[2020.3].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Fall 2020"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+            if(m[2021.1] !== null) {
+                {m[2021.1].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Spring 2021"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+            if(m[2021.3] !== null) {
+                {m[2021.3].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Fall 2021"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+            if(m[2022.1] !== null) {
+                {m[2022.1].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Spring 2022"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+            if(m[2022.3] !== null) {
+                {m[2022.3].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Fall 2022"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+            if(m[2023.1] !== null) {
+                {m[2023.1].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Spring 2023"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+            if(m[2023.3] !== null) {
+                {m[2023.3].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Fall 2023"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+            if(m[2024.1] !== null) {
+                {m[2024.1].map((a)=> {          //Creates list of inputed courses
+                    const currentCourse = [a.courseID, "Spring 2024"]
+                    setCourseHistoryList((ls) => [...ls, currentCourse])
+                }
+                )}
+            }
+        }
+        catch(error) {
+            alert("Courses not found. Check request")
             console.log(error)
         }
     }
@@ -164,8 +242,17 @@ function RoadmapPage({token}) {
                             </div>
                         )}
                     </div>
+                    <div className='flex flex-col h-auto w-1/2 mt-10'>
+                        <label className='text-xl font-semibold mb-4'>Class history</label>
+                        {courseHistoryList.map((a)=>           //Creates list of inputed courses
+                            <div className='flex flex-row w-max py-1 rounded-xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2 px-2'>
+                                <div className='ml-4'>{a[0]} Semester: {a[1]} </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <button onClick={handleConfirm} className="w-32 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Confirm courses for semester {semesterYear}.{semesterNum}</button>
+                {/* <button onClick={handleHistory} className="w-32 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Refresh</button> */}
             </div>
         </div>
     )
