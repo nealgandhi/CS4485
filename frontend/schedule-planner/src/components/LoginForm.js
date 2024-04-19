@@ -26,7 +26,7 @@ function LoginForm() {
 
     const handleSignin = async() => {
         try {
-            const r = await fetch("http://localhost:8080/get/user/" + email + "/password/" + pass);
+            const r = await fetch("http://143.198.48.114:8080/get/user/" + email + "/password/" + pass);
             if(!r.ok) {
                 throw new Error('user not found')
             }

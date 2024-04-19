@@ -14,7 +14,7 @@ function RoadmapPage({token}) {
         (async() => {
         try {
             const token = location.state.passToken
-            const r = await fetch("http://localhost:8080/validate/" + token);
+            const r = await fetch("http://143.198.48.114:8080/validate/" + token);
             if(!r.ok) {
                 throw new Error('token not passed')
             }
@@ -31,7 +31,7 @@ function RoadmapPage({token}) {
     
     const handleSubmitClick = async() => {       //handles when submit button pressed, adds course to box underneath
         try {
-            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
+            const r = await fetch("http://143.198.48.114:8080/get/course/" + prefix + "/" + number + "/info");
             if(!r.ok) {
                 throw new Error('class not found')
             }
