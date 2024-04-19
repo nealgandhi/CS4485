@@ -61,7 +61,7 @@ function SignupForm() {
         if(degreeID === "compSci") {
             id = 1
         }
-        const target = "http://143.198.48.114:8080/post/user/" + email + "/degree/" + id + "/password/" + pass
+        const target = "http://127.0.0.1:8080/post/user/" + email + "/degree/" + id + "/password/" + pass
 
         try {
             const r = await fetch(target, {

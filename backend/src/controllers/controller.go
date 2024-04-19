@@ -139,6 +139,7 @@ func AddUserSemesterCourses(c *gin.Context) {
 	userEmail := c.Param("email")
 	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
 	courses := strings.Split(c.PostForm("courses"), ",")
+	log.Println(c.PostForm("courses"))
 
 	sqlInsertString := "INSERT INTO UserPlan VALUES "
 	for i, s := range courses {

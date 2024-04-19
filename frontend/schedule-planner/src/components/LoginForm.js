@@ -24,12 +24,17 @@ function LoginForm() {
 
     const handleSignin = async() => {
         try {
-            const r = await fetch("http://143.198.48.114:8080/get/user/" + email + "/password/" + pass);
+            const r = await fetch("http://127.0.0.1:8080/get/user/" + email + "/password/" + pass);
             if(!r.ok) {
                 throw new Error('user not found')
             }
             const m = await r.json();
             console.log(m)
+
+            // save info
+            var userInfo = require('../userInfo')
+            userInfo.email = email
+
             setGoToRoadmap(true)
         }
         catch(error) {
