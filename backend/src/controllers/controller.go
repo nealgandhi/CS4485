@@ -103,6 +103,43 @@ func VerifySemesterCourseEligibility(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "eligible": 0})
 }
 
+func GetUserCourses(c *gin.Context) {
+	userEmail := c.Param("email")
+	semesters := [...]string{"2024.1", "2023.3", "2023.1", "2022.3", "2022.1", "2021.3", "2021.1", "2020.3"}
+
+	reply := gin.H{"email":userEmail}
+
+	for _, semester := range semesters {
+		results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
+
+		if err != nil {
+			c.AbortWithStatus(400)
+			log.Println(err)
+			return
+		}
+
+		type courseId struct {
+			CourseId string `json:"courseID"`
+		}
+
+		var semesterCourses []courseId
+
+		for results.Next() {
+			var row courseId
+			err = results.Scan(&row.CourseId)
+			if err != nil {
+				panic(err.Error())
+			}
+			semesterCourses = append(semesterCourses, row)
+		}
+
+		reply[semester] = semesterCourses
+	}
+
+	c.JSON(http.StatusOK, reply)
+
+}
+
 func GetUserSemesterCourses(c *gin.Context) {
 	userEmail := c.Param("email")
 	semester := c.Param("semester")
