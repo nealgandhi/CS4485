@@ -11,6 +11,7 @@ import (
 	"github.com/capstone/backend/src/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetPrereqs(c *gin.Context) {
@@ -186,15 +187,15 @@ func AddUser(c *gin.Context) {
 	pw := c.Param("password")
 
 	//encryptes pass
-	// hash, passErr := bcrypt.GenerateFromPassword([]byte(pw), 10)
-	// if passErr != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": "Failed to hash password",
-	// 	})
-	// 	return
-	// }
+	hash, passErr := bcrypt.GenerateFromPassword([]byte(pw), 10)
+	if passErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to hash password",
+		})
+		return
+	}
 
-	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + pw + "\")"
+	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + string(hash) + "\")"
 
 	_, err := utils.DB.Query(sqlInsertString)
 	if err != nil {
@@ -208,7 +209,7 @@ func GetUser(c *gin.Context) {
 	userEmail := c.Param("email")
 	pw := c.Param("password")
 
-	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\" AND password=\"" + pw + "\"")
+	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
@@ -234,13 +235,13 @@ func GetUser(c *gin.Context) {
 	}
 
 	//checks if hashed password matches
-	// decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
-	// if decryptError != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": "Invalid email or password",
-	// 	})
-	// 	return
-	// }
+	decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
+	if decryptError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email or password",
+		})
+		return
+	}
 
 	//Generate jwt token for authentication
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
