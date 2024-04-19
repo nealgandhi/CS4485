@@ -17,7 +17,7 @@ function RoadmapPage({token}) {
         (async() => {
             try {
                 const token = location.state.passToken
-                const r = await fetch("http://localhost:8080/validate/" + token);
+                const r = await fetch("http://143.198.48.114:8080/validate/" + token);
                 if(!r.ok) {
                     throw new Error('token not passed')
                 }
@@ -42,7 +42,7 @@ function RoadmapPage({token}) {
             return
         }
         try {
-            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
+            const r = await fetch("http://143.198.48.114:8080/get/course/" + prefix + "/" + number + "/info");
             if(!r.ok) {
                 throw new Error('class not found')
             }
@@ -66,7 +66,7 @@ function RoadmapPage({token}) {
     }
 
     const handleConfirm = async() => {
-        const target = "http://localhost:8080/post/user/" + user + "/semester/" + semesterYear + "." + semesterNum + "/courses"
+        const target = "http://143.198.48.114:8080/post/user/" + user + "/semester/" + semesterYear + "." + semesterNum + "/courses"
         var courses = getCourseList()
         setCourseHistoryList([])
         try {
@@ -95,7 +95,7 @@ function RoadmapPage({token}) {
     const handleHistory = async() => {
         setCourseHistoryList([])
         try {
-            const r = await fetch("http://localhost:8080/get/user/" + user + "/courses");
+            const r = await fetch("http://143.198.48.114:8080/get/user/" + user + "/courses");
             if(!r.ok) {
                 throw new Error(r.status)
             }
@@ -190,7 +190,7 @@ function RoadmapPage({token}) {
         <div className="flex flex-col h-auto ml-10 mb-10">
             <div className="mt-16 w-3/4">
                 <h1 className="text-3xl font-semibold">Plan out your degree</h1>
-                <p className="mt-4">Hello {user}, Type in the courses (one semester at a time) that you have already taken below. You can add onto these later if needed.</p>
+                <p className="mt-4">Hello {user}, type in the courses (one semester at a time) that you have already taken below. You can add onto these later if needed.</p>
             </div>
             <div className='flex flex-col mt-12'>
                 <div className='w-3/4'>
