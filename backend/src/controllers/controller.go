@@ -268,9 +268,42 @@ func RemoveUser(c *gin.Context) {
 	userEmail := c.Param("email")
 	pw := c.Param("password")
 
-	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\" AND password=\"" + pw + "\""
+	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+		return
+	}
 
-	_, err := utils.DB.Query(sqlDeleteString)
+	var uinfo models.UserInfo
+
+	for results.Next() {
+
+		err = results.Scan(&uinfo.Email, &uinfo.Id, &uinfo.Password)
+		if err != nil {
+			panic(err.Error())
+		}
+
+	}
+
+	uEmail := &uinfo.Email //Tests if user exists in databse and outputs error 401 if not
+	if *uEmail == "" {
+		c.AbortWithStatus(401)
+		log.Println("Error 401: User not found in the database. Check your data and query.")
+		return
+	}
+
+	decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
+	if decryptError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email or password",
+		})
+		return
+	}
+
+	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\""
+
+	_, err = utils.DB.Query(sqlDeleteString)
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Panicln(err)
@@ -282,6 +315,6 @@ func Validate(c *gin.Context) {
 	user, _ := c.Get("user")
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": user.(models.UserInfo).Email,
+		"email": user.(models.UserInfo).Email,
 	})
 }

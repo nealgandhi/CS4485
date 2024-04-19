@@ -14,11 +14,8 @@ import (
 )
 
 func ReequireAuth(c *gin.Context) {
-	//Gets cookie
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-	}
+	//Gets token
+	tokenString := c.Param("token")
 
 	//Decode token and validate
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

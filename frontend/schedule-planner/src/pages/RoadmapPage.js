@@ -1,14 +1,37 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import {useLocation, useNavigate} from 'react-router-dom'
 
-function RoadmapPage() {
+function RoadmapPage({token}) {
 
     const [prefix, setPrefix] = useState(""); 
     const [number, setNumber] = useState("");
     const [coursesTakenList, setCoursesTakenList] = useState([]);   //keeps track of all entered courses
+    const location = useLocation()
+    let navigate = useNavigate();
+    const [user, setUser] = useState()
+
+    useEffect(() => {
+        (async() => {
+        try {
+            const token = location.state.passToken
+            const r = await fetch("http://localhost:8080/validate/" + token);
+            if(!r.ok) {
+                throw new Error('token not passed')
+            }
+            const m = await r.json();
+            console.log(m)
+            setUser(m.email)
+        }
+        catch(error) {
+            alert("Token not found. Please check the login.")
+            navigate('/login')
+        }
+    })()
+}, [])
     
     const handleSubmitClick = async() => {       //handles when submit button pressed, adds course to box underneath
         try {
-            const r = await fetch("http://143.198.48.114:8080/get/course/" + prefix + "/" + number + "/info");
+            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
             if(!r.ok) {
                 throw new Error('class not found')
             }
@@ -32,7 +55,7 @@ function RoadmapPage() {
         <div className="flex flex-col h-screen ml-10 mb-10">
             <div className="mt-16 w-3/4">
                 <h1 className="text-3xl font-semibold">Plan out your degree</h1>
-                <p className="mt-4">Type in the courses that you have already taken below. You can add onto these later if needed.</p>
+                <p className="mt-4">Hello {user}, Type in the courses that you have already taken below. You can add onto these later if needed.</p>
             </div>
             <div className='flex flex-col mt-12'>
                 <div className='w-3/4'>

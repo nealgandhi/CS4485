@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import LoginButton from "./Login"
 
 function LoginForm() {
     const [email, setEmail] = useState("")
     const [pass, setPass] = useState("")
     const [rememberBox, setRememberBox] = useState(false)
-    const [goToRoadmap, setGoToRoadmap] = useState(false)
+    // const [goToRoadmap, setGoToRoadmap] = useState(false)
+    let navigate = useNavigate();
 
     const emailInput = event => {   //handle when input is changing (allows user to type in input)
         setEmail(event.target.value);
@@ -24,22 +26,24 @@ function LoginForm() {
 
     const handleSignin = async() => {
         try {
-            const r = await fetch("http://143.198.48.114:8080/get/user/" + email + "/password/" + pass);
+            const r = await fetch("http://localhost:8080/get/user/" + email + "/password/" + pass);
             if(!r.ok) {
                 throw new Error('user not found')
             }
             const m = await r.json();
-            console.log(m)
-            setGoToRoadmap(true)
+            // console.log(m.token)
+            routeChange(m.token)
         }
         catch(error) {
             alert("Email or password incorrect.")
         }
     }
 
-    if(goToRoadmap) {
-        return <Navigate to="/roadmap" />
+    const routeChange = (passTokenArg) =>{
+        // console.log("THis is the token", passTokenArg)
+        navigate('/roadmap', {state:{passToken:passTokenArg}})
     }
+
 
     return (
         <div className='w-3/4 lg:w-1/2 bg-white px-10 py-5 rounded-3xl border-2 border-blue-800'>
@@ -81,6 +85,7 @@ function LoginForm() {
                 <div className='mt-6 flex flex-col gap-y-4'>
                     <button onClick={ handleSignin } className='active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white text-lg font-bold'>Sign in</button>
                 </div>
+                <LoginButton />
                 <div className='mt-6 flex justify-center items-center'>
                     <p className='font-medium text-base'>Don't have an account?</p>
                     <a href="/signup" className='text-blue-800 text-medium ml-2'>Sign up</a>

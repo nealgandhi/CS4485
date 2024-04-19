@@ -31,7 +31,7 @@ func SetupRoutes() *gin.Engine {
 	router.GET("/get/user/:email/password/:password", controllers.GetUser)
 	router.POST("/delete/user/:email/password/:password", controllers.RemoveUser)
 
-	router.GET("/validate", middleware.ReequireAuth, controllers.Validate)
+	router.GET("/validate/:token", middleware.ReequireAuth, controllers.Validate)
 
 	http.ListenAndServe(":8080",
 		handlers.CORS(
