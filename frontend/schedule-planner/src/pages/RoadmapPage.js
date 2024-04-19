@@ -93,7 +93,7 @@ function RoadmapPage({token}) {
     }
 
     const handleHistory = async() => {
-        setCourseHistoryList([])
+        // setCourseHistoryList([])
         try {
             const r = await fetch("http://143.198.48.114:8080/get/user/" + user + "/courses");
             if(!r.ok) {
