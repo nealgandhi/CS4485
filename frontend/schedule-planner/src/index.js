@@ -13,7 +13,7 @@ root.render(
     domain="dev-h1c2gwh7xh4mapew.us.auth0.com"
     clientId="sF60D1sotalrMLZio5j3lmN7XyTJ7DBP"
     authorizationParams={{
-      redirect_uri: "http://localhost:3000/roadmap",
+      redirect_uri: "http://143.198.48.114:3000/roadmap",
       audience: "http://143.198.48.114:8080",
       scope: "openid profile email"
     }}
