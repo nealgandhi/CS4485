@@ -84,76 +84,69 @@ function SignupForm() {
     }
     
     return (
-        <div className='w-3/4 lg:w-3/4 bg-white px-10 py-5 rounded-3xl border-2 border-blue-800'>
-            <h1 className='text-5xl font-semibold'>Sign up</h1>
-            <p className='font-medium text-lg text-gray-500 mt-4'>Welcome! Please enter your details.</p>
-            <div className='mt-8'>
-                {/* <div className='flex flex-row items-center gap-4'>
-                    <label className='w-32 text-lg font-medium'>NetID</label>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Enter your NetID'
-                        value={netID}
-                        onChange={idInput}
-                     />
-                </div>
-                <div className='flex flex-row items-center gap-4'>
-                    <label className='flex w-32 text-lg font-medium'>First Name</label>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Enter your first name'
-                        value={fName}
-                        onChange={fNameInput}
-                     />
-                </div>
-                <div className='flex flex-row items-center gap-4'>
-                    <label className='flex w-32 text-lg font-medium'>Last Name</label>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Enter your last name'
-                        value={lName}
-                        onChange={lNameInput}
-                     />
-                </div> */}
-                <div className='flex flex-row items-center gap-4'>
-                    <label className='flex w-32 text-lg font-medium'>Email</label>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Enter a valid email address'
-                        value={email}
-                        onChange={emailInput}
-                     />
-                </div>
-                <div className='flex flex-row items-center gap-4'>
-                    <label className='flex w-32 text-lg font-medium'>Major</label>
-                    <select onChange={degreeInput} className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'>
-                        <option value="null">Choose a major</option>
-                        <option value="compSci">Computer Science</option>
-                    </select>
-                </div>
-                <div className='flex flex-col items-center mt-4'>
-                    <label className='w-32 text-lg font-medium'>Password</label>
-                    <text>*Must be longer than 6 characters and contain a special character</text>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Create your password'
-                        type="password"
-                        value={pass}
-                        onChange={passInput}
-                     />
-                </div>
-                <div className='flex flex-col items-center mt-2'>
-                    <label className='text-lg font-medium'>Confirm Password</label>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Retype your password'
-                        type="password"
-                        value={confirmPass}
-                        onChange={confirmPassInput}
-                     />
-                </div>
-                <div className='mt-6 flex flex-col gap-y-4'>
-                    <button onClick={ handleSubmitClick } className='active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white text-lg font-bold'>Sign up</button>
+        <div className='w-1/2 lg:w-1/2 bg-white px-5 py-5 rounded-3xl border-2 border-blue-800'>
+            <div fontfamily="Arial" class="pt-0 pr-3 pb-0 pl-3 mr-auto ml-auto sm:px-5 lg:px-12 max-w-7xl">
+                <div class="bg-white rounded-xl sm:p-10">
+                    <div class="pt-8 pr-8 pb-8 pl-8 lg:col-span-7">
+                        <p fontsize="2xl" class="text-gray-900 text-left font-extrabold leading-snug tracking-tight mb-4
+                            md:text-4xl">Create an Account</p>
+                        <div>
+                        <div class="w-full mt-3 mr-auto mb-3 ml-auto">
+                            <label class="text-sm font-medium text-gray-700 block">Your Email</label>
+                            <div class="mt-1 mr-0 mb-0 ml-0">
+                                <input
+                                className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
+                                placeholder='Enter a valid email address'
+                                value={email}
+                                onChange={emailInput}
+                            />
+                            </div>
+                        </div>
+                        <div class="w-full mt-0 mr-auto mb-4 ml-auto">
+                            <label class="text-sm font-medium text-gray-700 block">Major</label>
+                            <div class="mt-1 mr-0 mb-0 ml-0">
+                                <select onChange={degreeInput} className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'>
+                                    <option value="null">Choose a major</option>
+                                    <option value="compSci">Computer Science</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="w-full mt-0 mr-auto mb-3 ml-auto">
+                            <label class="text-sm font-medium text-gray-700 block">Your Password</label>
+                            <div class="mt-1 mr-0 mb-0 ml-0">
+                            <input
+                                className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
+                                placeholder='*************'
+                                type="password"
+                                value={pass}
+                                onChange={passInput}
+                            />
+                            </div>
+                        </div>
+                        <div class="w-full mt-0 mr-auto mb-3 ml-auto">
+                            <label class="text-sm font-medium text-gray-700 block">Confirm Password</label>
+                            <div class="mt-1 mr-0 mb-0 ml-0">
+                            <input
+                                className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
+                                placeholder='Retype your password'
+                                type="password"
+                                value={confirmPass}
+                                onChange={confirmPassInput}
+                            />
+                            </div>
+                        </div>
+                        <button fontfamily="Arial" type="submit" class="hover:bg-gray-600 rounded-md text-xl mt-3 pt-3 pr-3 pb-3 pl-3
+                            bg-gray-800 font-semibold text-white w-full text-center" onClick={handleSubmitClick}>Submit</button>
+                        <div class="items-center justify-start mt-6 mr-0 mb-0 ml-0 pt-6 pr-0 pb-0 pl-0 flex border-t-2
+                            border-gray-100">
+                            <p class="text-sm text-gray-800">Already have an account?</p>
+                            <a href="/login"class="text-sm text-blue-500 mt-0 mr-0 mb-0 ml-2">Sign In</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="lg:gap-x-10 lg:grid-cols-12 lg:gap-y-8 grid grid-cols-1">
+                        <div class="lg:col-span-5 lg:block hidden"></div>
+                    </div>
                 </div>
             </div>
         </div>
