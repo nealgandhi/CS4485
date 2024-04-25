@@ -230,7 +230,7 @@ function RoadmapPage({token}) {
                             <option value="3">Fall</option>
                         </select>
                     </div>
-                    <button onClick = {handleSubmitClick} className="w-32 mt-2 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Add Course</button>
+                    <button onClick = {handleSubmitClick} className="w-32 mt-2 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-700 text-white font-semibold">Add Course</button>
                 </div>
                 <div className="flex flex-row justify-between gap-20">
                     <div className="h-80 flex flex-wrap flex-col mt-10 ml-1">

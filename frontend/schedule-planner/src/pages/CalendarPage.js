@@ -22,31 +22,40 @@ function Schedule() {
         []
     )
 
-    const { defaultDate, scrollToTime } = useMemo(
+    const { defaultDate, scrollToTime, dayLayoutAlgorithm } = useMemo(
         () => ({
         defaultDate: new Date(new Date(Date.now())),
         scrollToTime: new Date(1970, 1, 1, 6),
+        dayLayoutAlgorithm: "no-overlap"
         }),
         []
     )
     const localizer = momentLocalizer(moment)
     return (
         <div style={{
-            paddingTop: "4vh",
-            paddingBottom: "4vh"
-        }}>
-            <Calendar
-            defaultDate={defaultDate}
-            defaultView={Views.WEEK}
-            events={myEvents}
-            date={new Date(Date.now())}
-            toolbar
-            localizer={localizer}
-            onSelectEvent={handleSelectEvent}
-            onSelectSlot={handleSelectSlot}
-            selectable
-            scrollToTime={scrollToTime}
-            />
+            paddingTop: "8vh",
+            paddingBottom: "8vh",
+            paddingRight: "8vw",
+            paddingLeft: "8vw"
+            }}>
+            <div style={{
+                paddingTop: "4vh",
+                paddingBottom: "4vh"
+            }}>
+                <Calendar
+                defaultDate={defaultDate}
+                defaultView={Views.WEEK}
+                dayLayoutAlgorithm={dayLayoutAlgorithm}
+                events={myEvents}
+                date={new Date(Date.now())}
+                toolbar
+                localizer={localizer}
+                onSelectEvent={handleSelectEvent}
+                onSelectSlot={handleSelectSlot}
+                selectable
+                scrollToTime={scrollToTime}
+                />
+        </div>
       </div>
     );
 }
