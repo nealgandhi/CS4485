@@ -90,10 +90,11 @@ function PrerequisiteTrees(){
         paddingRight: "8vw",
         paddingLeft: "8vw"
         }}>
-
-          <button class="pr-8" onClick={()=>SetZoom(zoom + .05)}>zoom in</button>
-          <button class="pr-8" onClick={()=>SetZoom(zoom - .05)}>zoom out</button>
-          <button class="pr-8" onClick={()=>SetZoom(1.5)}>reset zoom</button>
+          <div>
+          <button class="w-32 mb-1 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-700 text-white mr-4" onClick={()=>SetZoom(zoom + .05)}>zoom in</button>
+          <button class="w-32 mb-1 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-700 text-white mr-4" onClick={()=>SetZoom(zoom - .05)}>zoom out</button>
+          <button class="w-32 mb-1 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-700 text-white mr-4" onClick={()=>SetZoom(1.5)}>reset zoom</button>
+          </div>
           <div class="w-full border-4 border-gray-400 rounded-2xl pr-4 pl-4">
             <CytoscapeComponent
                   elements={CytoscapeComponent.normalizeElements(graphData)}

@@ -81,7 +81,7 @@ function CourseSelectionPage() {
                             onChange={numberInput}
                         />
                     </div>
-                    <button onClick = {handleSubmitClick} className="w-32 mt-2 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Search</button>
+                    <button onClick = {handleSubmitClick} className="w-32 mt-2 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-700 text-white font-semibold">Search</button>
                 </div>
             </div>
             <div className="flex flex-row justify-between gap-20">
@@ -103,7 +103,7 @@ function CourseSelectionPage() {
                 </div>
             </div>
             <div className='flex flex-row w-full '>
-                <button onclick={handleGenerateClick} className='w-32 mt-2 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold'>Generate Schedule</button>
+                <button onclick={handleGenerateClick} className='w-32 mt-2 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-700 text-white font-semibold'>Generate Schedule</button>
             </div>
         </div>
     )
