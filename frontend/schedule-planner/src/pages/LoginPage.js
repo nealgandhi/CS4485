@@ -1,11 +1,10 @@
-import React from 'react';
 import LoginForm from "../components/LoginForm";
 
-function Login() {
+function LoginPage() {
     return (
         <div>
             <div
-            style={{
+             style={{
                 backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/LoginBackground.jpg')",
                 height: "100vh",
                 width: "100%",
@@ -13,9 +12,9 @@ function Login() {
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
                 overflow: "hidden"
-            }} 
+            }}  
             >
-                <div className="flex w-full h-screen">
+                <div className="flex w-screen pt-36">
                     <div className='w-full flex items-center justify-center'>
                         <LoginForm />
                     </div>
@@ -25,4 +24,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default LoginPage;

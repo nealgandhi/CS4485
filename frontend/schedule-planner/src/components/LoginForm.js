@@ -45,52 +45,59 @@ function LoginForm() {
 
 
     return (
-        <div className='w-3/4 lg:w-1/2 bg-white px-10 py-5 rounded-3xl border-2 border-blue-800'>
-            <h1 className='text-5xl font-semibold'>Login</h1>
-            <p className='font-medium text-lg text-gray-500 mt-4'>Welcome back! Please enter your details.</p>
-            <div className='mt-8'>
-                <div className='flex flex-col'>
-                    <label className='text-lg font-medium'>Email</label>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Enter your Email'
-                        value={email}
-                        type="email"
-                        onChange={emailInput}
-                     />
-                </div>
-                <div className='flex flex-col'>
-                    <label className='text-lg font-medium'>Password</label>
-                    <input
-                        className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
-                        placeholder='Enter your password'
-                        type="password"
-                        value={pass}
-                        onChange={passInput}
-                     />
-                </div>
-                <div className='mt-8 flex justify-between items-center'>
-                    <div>
-                        <input 
-                            type="checkbox"
-                            id='remember'
-                            value={rememberBox}
-                            onChange={boxCheck}
-                        />
-                        <label className='ml-1 font-medium text-base' for='remember'>Remember me for 30 days</label>
+        <div className='content-center w-2/5 lg:w-2/5 bg-white px-10 py-5 rounded-3xl border-2 border-gray-800 mt-16 mr-auto ml-auto mb-16'>
+            <div fontfamily="Arial" class="pt-0 pr-3 pb-0 pl-3 mr-auto ml-auto sm:px-5 lg:px-12 max-w-7xl">
+                <div class="bg-white rounded-xl sm:p-10">
+                    <div class="pt-8 pr-8 pb-8 pl-8 lg:col-span-7">
+                        <p fontsize="2xl" class="text-gray-900 text-left font-extrabold leading-snug tracking-tight mb-4
+                            md:text-4xl">Welcome Back!</p>
+                        <div>
+                        <div class="w-full mt-3 mr-auto mb-3 ml-auto">
+                            <label class="text-sm font-medium text-gray-700 block">Email</label>
+                            <input
+                                className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
+                                placeholder='example@utdallas.edu'
+                                value={email}
+                                type="email"
+                                onChange={emailInput}
+                             />
+                            </div>
+                        </div>
+                
+                        <div class="w-full mt-0 mr-auto mb-3 ml-auto">
+                            <label class="text-sm font-medium text-gray-700 block">Password</label>
+                            <div class="mt-1 mr-0 mb-0 ml-0">
+                            <input
+                                className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
+                                placeholder='password123'
+                                type="password"
+                                value={pass}
+                                onChange={passInput}
+                            />
+                            </div>
+                        </div>
+                        <div className='mt-8 mb-4 flex justify-between items-center'>
+                            <div>
+                                <input 
+                                    type="checkbox"
+                                    id='remember'
+                                    value={rememberBox}
+                                    onChange={boxCheck}
+                                />
+                                <label className='ml-1 font-medium text-base' for='remember'>Remember me for 30 days</label>
+                            </div>
+                            <button href="/aboutus" className='font-medium text-base text-blue-800'>Forgot password</button>
+                        </div>
+                        <button fontfamily="Arial" type="submit" class="hover:bg-gray-600 rounded-md text-xl pt-3 pr-3 pb-3 pl-3
+                            bg-gray-800 font-semibold text-white w-full text-center" onClick={handleSignin}>Log In</button>
+                        <div class="items-center justify-start mt-6 mr-0 mb-0 ml-0 pt-6 pr-0 pb-0 pl-0 flex border-t-2
+                            border-gray-100">
+                        </div>
+                        </div>
                     </div>
-                    <button className='font-medium text-base text-blue-800'>Forgot password</button>
-                </div>
-                <div className='mt-6 flex flex-col gap-y-4'>
-                    <button onClick={ handleSignin } className='active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white text-lg font-bold'>Sign in</button>
-                </div>
-                {/* <LoginButton /> */}
-                <div className='mt-6 flex justify-center items-center'>
-                    <p className='font-medium text-base'>Don't have an account?</p>
-                    <a href="/signup" className='text-blue-800 text-medium ml-2'>Sign up</a>
                 </div>
             </div>
-        </div>
+
     )
 }
 
