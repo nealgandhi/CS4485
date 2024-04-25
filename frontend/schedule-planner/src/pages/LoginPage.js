@@ -8,7 +8,7 @@ function Login() {
             style={{
                 backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/LoginBackground.jpg')",
                 height: "100vh",
-                width: "100vw",
+                width: "100%",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
