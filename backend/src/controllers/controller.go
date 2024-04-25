@@ -3,11 +3,15 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/capstone/backend/src/models"
 	"github.com/capstone/backend/src/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetPrereqs(c *gin.Context) {
@@ -99,6 +103,43 @@ func VerifySemesterCourseEligibility(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "eligible": 0})
 }
 
+func GetUserCourses(c *gin.Context) {
+	userEmail := c.Param("email")
+	semesters := [...]string{"2024.1", "2023.3", "2023.1", "2022.3", "2022.1", "2021.3", "2021.1", "2020.3"}
+
+	reply := gin.H{"email": userEmail}
+
+	for _, semester := range semesters {
+		results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
+
+		if err != nil {
+			c.AbortWithStatus(400)
+			log.Println(err)
+			return
+		}
+
+		type courseId struct {
+			CourseId string `json:"courseID"`
+		}
+
+		var semesterCourses []courseId
+
+		for results.Next() {
+			var row courseId
+			err = results.Scan(&row.CourseId)
+			if err != nil {
+				panic(err.Error())
+			}
+			semesterCourses = append(semesterCourses, row)
+		}
+
+		reply[semester] = semesterCourses
+	}
+
+	c.JSON(http.StatusOK, reply)
+
+}
+
 func GetUserSemesterCourses(c *gin.Context) {
 	userEmail := c.Param("email")
 	semester := c.Param("semester")
@@ -110,7 +151,6 @@ func GetUserSemesterCourses(c *gin.Context) {
 		log.Println(err)
 		return
 	}
-
 
 	type courseId struct {
 		CourseId string `json:"courseID"`
@@ -183,7 +223,16 @@ func AddUser(c *gin.Context) {
 	id := c.Param("id")
 	pw := c.Param("password")
 
-	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + pw + "\")"
+	//encryptes pass
+	hash, passErr := bcrypt.GenerateFromPassword([]byte(pw), 10)
+	if passErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to hash password",
+		})
+		return
+	}
+
+	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + string(hash) + "\")"
 
 	_, err := utils.DB.Query(sqlInsertString)
 	if err != nil {
@@ -195,6 +244,7 @@ func AddUser(c *gin.Context) {
 
 func GetUser(c *gin.Context) {
 	userEmail := c.Param("email")
+	pw := c.Param("password")
 
 	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
 	if err != nil {
@@ -221,19 +271,87 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"info": uinfo})
+	//checks if hashed password matches
+	decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
+	if decryptError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email or password",
+		})
+		return
+	}
+
+	//Generate jwt token for authentication
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": uEmail,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	})
+
+	//sign and get token as string
+	tokenString, tokenErr := token.SignedString([]byte(os.Getenv("SECRETKEY")))
+	if tokenErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to create token",
+		})
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{"info": uinfo, "token": tokenString})
 }
 
 func RemoveUser(c *gin.Context) {
 	userEmail := c.Param("email")
 	pw := c.Param("password")
 
-	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\" AND password=\"" + pw + "\""
+	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+		return
+	}
 
-	_, err := utils.DB.Query(sqlDeleteString)
+	var uinfo models.UserInfo
+
+	for results.Next() {
+
+		err = results.Scan(&uinfo.Email, &uinfo.Id, &uinfo.Password)
+		if err != nil {
+			panic(err.Error())
+		}
+
+	}
+
+	uEmail := &uinfo.Email //Tests if user exists in databse and outputs error 401 if not
+	if *uEmail == "" {
+		c.AbortWithStatus(401)
+		log.Println("Error 401: User not found in the database. Check your data and query.")
+		return
+	}
+
+	decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
+	if decryptError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email or password",
+		})
+		return
+	}
+
+	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\""
+
+	_, err = utils.DB.Query(sqlDeleteString)
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Panicln(err)
 		return
 	}
+}
+
+func Validate(c *gin.Context) {
+	user, _ := c.Get("user")
+
+	c.JSON(http.StatusOK, gin.H{
+		"email": user.(models.UserInfo).Email,
+	})
 }

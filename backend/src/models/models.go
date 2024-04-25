@@ -1,6 +1,8 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Course2 struct {
 	Prefix string `json:"prefix"`

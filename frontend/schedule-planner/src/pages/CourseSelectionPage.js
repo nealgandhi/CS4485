@@ -9,12 +9,11 @@ function CourseSelectionPage() {
 
     const handleSubmitClick = async() => {       //handles when submit button pressed, adds course to box underneath
         try {
-            const r = await fetch("http://localhost:8080/get/course/" + prefix + "/" + number + "/info");
+            const r = await fetch("http://143.198.48.114:8080/get/course/" + prefix + "/" + number + "/info");
             if(!r.ok) {
                 throw new Error('class not found')
             }
             const m = await r.json();
-            // setCourse(m.info.id)
             const currentCourse = m.info.id
             setCourseList((ls)=>[...ls,currentCourse])
         }

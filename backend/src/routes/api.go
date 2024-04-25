@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/capstone/backend/src/controllers"
+	"github.com/capstone/backend/src/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/handlers"
 )
@@ -20,6 +21,7 @@ func SetupRoutes() *gin.Engine {
 
 	router.GET("/get/course/:cprefix/:cnumber/info", controllers.GetInfo)
 
+	router.GET("/get/user/:email/courses", controllers.GetUserCourses)
 	router.GET("/get/user/:email/semester/:semester/courses", controllers.GetUserSemesterCourses)
 	router.POST("/post/user/:email/semester/:semester/courses", controllers.AddUserSemesterCourses)
 	router.POST("/delete/user/:email/semester/:semester/courses", controllers.RemoveUserSemesterCourses)
@@ -27,8 +29,10 @@ func SetupRoutes() *gin.Engine {
 	router.GET("/get/user/:email/semester/:semester/courseeligibility", controllers.VerifySemesterCourseEligibility)
 
 	router.POST("/post/user/:email/degree/:id/password/:password", controllers.AddUser)
-	router.GET("/get/user/:email", controllers.GetUser)
+	router.GET("/get/user/:email/password/:password", controllers.GetUser)
 	router.POST("/delete/user/:email/password/:password", controllers.RemoveUser)
+
+	router.GET("/validate/:token", middleware.ReequireAuth, controllers.Validate)
 
 	http.ListenAndServe(":8080",
 		handlers.CORS(

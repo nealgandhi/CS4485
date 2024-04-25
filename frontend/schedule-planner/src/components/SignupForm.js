@@ -1,22 +1,25 @@
 import React, { useState } from 'react'
+import { Navigate } from "react-router-dom"
 
 function SignupForm() {
-    const [netID, setNetID] = useState("")
-    const [fName, setFName] = useState("")
-    const [lName, setLName] = useState("")
+    // const [netID, setNetID] = useState("")
+    // const [fName, setFName] = useState("")
+    // const [lName, setLName] = useState("")
     const [email, setEmail] = useState("")
     const [pass, setPass] = useState("")
     const [confirmPass, setConfirmPass] = useState("")
+    const [degreeID, setDegreeID] = useState()
+    const [goToLogin, setGoToLogin] = useState(false)
 
-    const idInput = event => {   //handle when input is changing (allows user to type in input)
-        setNetID(event.target.value);
-    }
-    const fNameInput = event => { 
-        setFName(event.target.value);
-    }
-    const lNameInput = event => { 
-        setLName(event.target.value);
-    }
+    // const idInput = event => {   //handle when input is changing (allows user to type in input)
+    //     setNetID(event.target.value);
+    // }
+    // const fNameInput = event => { 
+    //     setFName(event.target.value);
+    // }
+    // const lNameInput = event => { 
+    //     setLName(event.target.value);
+    // }
     const emailInput = event => { 
         setEmail(event.target.value);
     }
@@ -26,14 +29,66 @@ function SignupForm() {
     const confirmPassInput = event => { 
         setConfirmPass(event.target.value);
     }
+    const degreeInput = event => { 
+        setDegreeID(event.target.value);
+    }
     
+    const handleSubmitClick = async() => {       //handles when submit button pressed, adds user to DB
+        var id = 0
+        //error checking of fields
+        if(!email.includes("@") || !email.includes(".")) {
+            alert("Please enter valid email address.")
+            return
+        }
+        if(email.indexOf("@")+1 === email.indexOf(".")) {
+            alert("Please enter valid email address.")
+            return
+        }
+        if(pass.length < 6) {
+            alert("Password is too short. Please enter a longer password.")
+            return
+        }
+        if(!pass.includes("!") && !pass.includes("_") && !pass.includes("@") && !pass.includes("#") && !pass.includes("$")  && !pass.includes("*") && !pass.includes("?")) {
+            alert("Password does not contain one of the following special characters: !,_,@,#,$,*,?")
+            return
+        }
+        if(confirmPass !== pass) {
+            alert("Passwords do not match. Please type them in again.")
+            return
+        }
+
+        //sets the degree id for the database
+        if(degreeID === "compSci") {
+            id = 1
+        }
+        const target = "http://143.198.48.114:8080/post/user/" + email + "/degree/" + id + "/password/" + pass
+
+        try {
+            const r = await fetch(target, {
+                method: "POST"
+            });
+            if(!r.ok) {
+                throw new Error('newUserDenied')
+            }
+            setGoToLogin(true)
+            alert("User has been added, please input login information below.")
+        }
+        catch(error) {
+            alert("User could not be added.")
+            console.log(error)
+        }
+    }
+
+    if(goToLogin) {
+        return <Navigate to="/login" />
+    }
     
     return (
         <div className='w-3/4 lg:w-3/4 bg-white px-10 py-5 rounded-3xl border-2 border-blue-800'>
             <h1 className='text-5xl font-semibold'>Sign up</h1>
             <p className='font-medium text-lg text-gray-500 mt-4'>Welcome! Please enter your details.</p>
             <div className='mt-8'>
-                <div className='flex flex-row items-center gap-4'>
+                {/* <div className='flex flex-row items-center gap-4'>
                     <label className='w-32 text-lg font-medium'>NetID</label>
                     <input
                         className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'
@@ -59,7 +114,7 @@ function SignupForm() {
                         value={lName}
                         onChange={lNameInput}
                      />
-                </div>
+                </div> */}
                 <div className='flex flex-row items-center gap-4'>
                     <label className='flex w-32 text-lg font-medium'>Email</label>
                     <input
@@ -68,6 +123,13 @@ function SignupForm() {
                         value={email}
                         onChange={emailInput}
                      />
+                </div>
+                <div className='flex flex-row items-center gap-4'>
+                    <label className='flex w-32 text-lg font-medium'>Major</label>
+                    <select onChange={degreeInput} className='w-full border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'>
+                        <option value="null">Choose a major</option>
+                        <option value="compSci">Computer Science</option>
+                    </select>
                 </div>
                 <div className='flex flex-col items-center mt-4'>
                     <label className='w-32 text-lg font-medium'>Password</label>
@@ -91,7 +153,7 @@ function SignupForm() {
                      />
                 </div>
                 <div className='mt-6 flex flex-col gap-y-4'>
-                    <button className='active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white text-lg font-bold'>Sign up</button>
+                    <button onClick={ handleSubmitClick } className='active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white text-lg font-bold'>Sign up</button>
                 </div>
             </div>
         </div>
