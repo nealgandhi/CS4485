@@ -5,14 +5,13 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"database/sql"
 	"time"
-	"fmt"
-	"strconv"
+
 	"github.com/capstone/backend/src/models"
 	"github.com/capstone/backend/src/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetPrereqs(c *gin.Context) {
@@ -104,6 +103,43 @@ func VerifySemesterCourseEligibility(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "eligible": 0})
 }
 
+func GetUserCourses(c *gin.Context) {
+	userEmail := c.Param("email")
+	semesters := [...]string{"2024.1", "2023.3", "2023.1", "2022.3", "2022.1", "2021.3", "2021.1", "2020.3"}
+
+	reply := gin.H{"email":userEmail}
+
+	for _, semester := range semesters {
+		results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
+
+		if err != nil {
+			c.AbortWithStatus(400)
+			log.Println(err)
+			return
+		}
+
+		type courseId struct {
+			CourseId string `json:"courseID"`
+		}
+
+		var semesterCourses []courseId
+
+		for results.Next() {
+			var row courseId
+			err = results.Scan(&row.CourseId)
+			if err != nil {
+				panic(err.Error())
+			}
+			semesterCourses = append(semesterCourses, row)
+		}
+
+		reply[semester] = semesterCourses
+	}
+
+	c.JSON(http.StatusOK, reply)
+
+}
+
 func GetUserSemesterCourses(c *gin.Context) {
 	userEmail := c.Param("email")
 	semester := c.Param("semester")
@@ -188,15 +224,15 @@ func AddUser(c *gin.Context) {
 	pw := c.Param("password")
 
 	//encryptes pass
-	// hash, passErr := bcrypt.GenerateFromPassword([]byte(pw), 10)
-	// if passErr != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": "Failed to hash password",
-	// 	})
-	// 	return
-	// }
+	hash, passErr := bcrypt.GenerateFromPassword([]byte(pw), 10)
+	if passErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to hash password",
+		})
+		return
+	}
 
-	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + pw + "\")"
+	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + string(hash) + "\")"
 
 	_, err := utils.DB.Query(sqlInsertString)
 	if err != nil {
@@ -210,7 +246,7 @@ func GetUser(c *gin.Context) {
 	userEmail := c.Param("email")
 	pw := c.Param("password")
 
-	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\" AND password=\"" + pw + "\"")
+	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Println(err)
@@ -236,13 +272,13 @@ func GetUser(c *gin.Context) {
 	}
 
 	//checks if hashed password matches
-	// decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
-	// if decryptError != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": "Invalid email or password",
-	// 	})
-	// 	return
-	// }
+	decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
+	if decryptError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email or password",
+		})
+		return
+	}
 
 	//Generate jwt token for authentication
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -269,9 +305,42 @@ func RemoveUser(c *gin.Context) {
 	userEmail := c.Param("email")
 	pw := c.Param("password")
 
-	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\" AND password=\"" + pw + "\""
+	results, err := utils.DB.Query("SELECT email, degree_id, password FROM Users WHERE email=\"" + userEmail + "\"")
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+		return
+	}
 
-	_, err := utils.DB.Query(sqlDeleteString)
+	var uinfo models.UserInfo
+
+	for results.Next() {
+
+		err = results.Scan(&uinfo.Email, &uinfo.Id, &uinfo.Password)
+		if err != nil {
+			panic(err.Error())
+		}
+
+	}
+
+	uEmail := &uinfo.Email //Tests if user exists in databse and outputs error 401 if not
+	if *uEmail == "" {
+		c.AbortWithStatus(401)
+		log.Println("Error 401: User not found in the database. Check your data and query.")
+		return
+	}
+
+	decryptError := bcrypt.CompareHashAndPassword([]byte(uinfo.Password), []byte(pw))
+	if decryptError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email or password",
+		})
+		return
+	}
+
+	sqlDeleteString := "DELETE FROM Users WHERE email=\"" + userEmail + "\""
+
+	_, err = utils.DB.Query(sqlDeleteString)
 	if err != nil {
 		c.AbortWithStatus(400)
 		log.Panicln(err)
@@ -283,299 +352,6 @@ func Validate(c *gin.Context) {
 	user, _ := c.Get("user")
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": user.(models.UserInfo).Email,
+		"email": user.(models.UserInfo).Email,
 	})
-}
-
-func SetSemester(c *gin.Context) {
-	userEmail := c.Param("email")
-	currentsemester := c.PostForm("currentsemester")
-
-	sqlInsertString := "UPDATE Users SET current_semester = " +  currentsemester + " WHERE email=\"" + userEmail + "\""
-
-	fmt.Print(sqlInsertString)
-
-	_, err := utils.DB.Query(sqlInsertString)
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Panicln(err)
-		return
-	}
-}
-
-func GetSemester(c *gin.Context) {
-	userEmail := c.Param("email")
-
-	sqlInsertString := "SELECT current_semester FROM Users WHERE email=\"" + userEmail + "\""
-
-	fmt.Print(sqlInsertString)
-
-	results, err := utils.DB.Query(sqlInsertString)
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Panicln(err)
-		return
-	}
-
-	var currentsemester int
-
-	if results.Next() {
-		err = results.Scan(&currentsemester)
-		if err != nil {
-			panic(err.Error)
-		}
-	}
-
-	c.JSON(http.StatusOK, gin.H{"currentsemester": currentsemester})
-
-}
-
-
-func PlanAddCourse(c *gin.Context) {
-	userEmail := c.Param("email")
-	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
-	courses := strings.Split(c.PostForm("courses"), ",")
-
-	sqlInsertString := "INSERT INTO UserPlanChanges (email, semester, course_to_add) VALUES "
-	for i, s := range courses {
-
-		sqlInsertString += "(\"" + userEmail + "\",\"" + semester + "\",\"" + s + "\")"
-
-		if i < len(courses)-1 {
-			sqlInsertString += ","
-		}
-	}
-
-	_, err := utils.DB.Query(sqlInsertString)
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Panicln(err)
-		return
-	}
-}
-
-
-func PlanRemoveCourse(c *gin.Context) {
-	userEmail := c.Param("email")
-	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
-	courses := strings.Split(c.PostForm("courses"), ",")
-
-	sqlDeleteString := "DELETE FROM UserPlanChanges WHERE email=\"" + userEmail + "\" AND semester=\"" + semester + "\" AND course_to_add IN ("
-	for i, s := range courses {
-		sqlDeleteString += "\"" + s + "\""
-		if i < len(courses)-1 {
-			sqlDeleteString += ","
-		}
-	}
-	sqlDeleteString += ")"
-
-	_, err := utils.DB.Query(sqlDeleteString)
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Panicln(err)
-		return
-	}
-}
-
-func GetPlanCourse(c *gin.Context) {
-	userEmail := c.Param("email")
-	semester := c.Param("semester")
-
-	results, err := utils.DB.Query("SELECT course_to_add FROM UserPlanChanges WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
-
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
-		return
-	}
-
-	type courseId struct {
-		CourseId sql.NullString `json:"courseID"`
-	}
-
-	var semesterCourses []courseId
-
-	for results.Next() {
-		var row courseId
-		err = results.Scan(&row.CourseId)
-		if err != nil {
-			panic(err.Error())
-		}
-		semesterCourses = append(semesterCourses, row)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "courses": semesterCourses})
-}
-
-func DropAddCourse(c *gin.Context) {
-	userEmail := c.Param("email")
-	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
-	courses := strings.Split(c.PostForm("courses"), ",")
-
-	sqlInsertString := "INSERT INTO UserPlanChanges (email, semester, course_to_remove) VALUES "
-	for i, s := range courses {
-
-		sqlInsertString += "(\"" + userEmail + "\",\"" + semester + "\",\"" + s + "\")"
-
-		if i < len(courses)-1 {
-			sqlInsertString += ","
-		}
-	}
-
-	_, err := utils.DB.Query(sqlInsertString)
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Panicln(err)
-		return
-	}
-}
-
-func DropRemoveCourse(c *gin.Context) {
-	userEmail := c.Param("email")
-	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
-	courses := strings.Split(c.PostForm("courses"), ",")
-
-	sqlDeleteString := "DELETE FROM UserPlanChanges WHERE email=\"" + userEmail + "\" AND semester=\"" + semester + "\" AND course_to_remove IN ("
-	for i, s := range courses {
-		sqlDeleteString += "\"" + s + "\""
-		if i < len(courses)-1 {
-			sqlDeleteString += ","
-		}
-	}
-	sqlDeleteString += ")"
-
-	_, err := utils.DB.Query(sqlDeleteString)
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Panicln(err)
-		return
-	}
-}
-
-func GetDropCourse(c *gin.Context) {
-	userEmail := c.Param("email")
-	semester := c.Param("semester")
-
-	results, err := utils.DB.Query("SELECT course_to_remove FROM UserPlanChanges WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
-
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
-		return
-	}
-
-	type courseId struct {
-		CourseId sql.NullString `json:"courseID"`
-	}
-
-	var semesterCourses []courseId
-
-	for results.Next() {
-		var row courseId
-		err = results.Scan(&row.CourseId)
-		if err != nil {
-			panic(err.Error())
-		}
-		semesterCourses = append(semesterCourses, row)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "courses": semesterCourses})
-}
-
-func ValidateGenSchedule(c *gin.Context) {
-	userEmail := c.Param("email")
-	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
-
-	sqlInsertString := "SELECT current_semester FROM Users WHERE email=\"" + userEmail + "\""
-
-	results, err := utils.DB.Query(sqlInsertString)
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Panicln(err)
-		return
-	}
-
-	var usersemester int
-
-	if results.Next() {
-		err = results.Scan(&usersemester)
-		if err != nil {
-			panic(err.Error)
-		}
-	}
-	type courseId struct {
-		CourseId sql.NullString `json:"courseID"`
-	}
-
-	results, err = utils.DB.Query("SELECT course_id FROM DegreeRecommendedCourses WHERE semester=\"" + strconv.Itoa(usersemester) + "\" and course_type=\"R\"")
-
-	var semesterCourses []courseId
-
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
-		return
-	}
-
-	for results.Next() {
-		var row courseId
-		err = results.Scan(&row.CourseId)
-		if err != nil {
-			panic(err.Error())
-		}
-		semesterCourses = append(semesterCourses, row)
-	}
-
-	results, err = utils.DB.Query("SELECT course_to_add FROM UserPlanChanges WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
-
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
-		return
-	}
-
-	for results.Next() {
-		var row courseId
-		err = results.Scan(&row.CourseId)
-		if err != nil {
-			panic(err.Error())
-		}
-		for i := 0; i < len(semesterCourses); i++ {
-			if row.CourseId ==  semesterCourses[i].CourseId {
-				break
-			}
-			if i == len(semesterCourses) - 1 {
-				semesterCourses = append(semesterCourses, row)
-			}
-		}
-	}
-
-	results, err = utils.DB.Query("SELECT course_to_remove FROM UserPlanChanges WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
-
-	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
-		return
-	}
-
-	for results.Next() {
-		var row courseId
-		err = results.Scan(&row.CourseId)
-		if err != nil {
-			panic(err.Error())
-		}
-		for i := 0; i < len(semesterCourses); i++ {
-			if row.CourseId ==  semesterCourses[i].CourseId {
-				fmt.Print("REMOVE")
-				if i == len(semesterCourses) - 1 {
-					semesterCourses = semesterCourses[:len(semesterCourses) - 1]
-				} else {
-					semesterCourses = append(semesterCourses[:i], semesterCourses[i + 1:]...)
-				}
-			}
-		}
-	}
-
-	c.JSON(http.StatusOK, gin.H{"email": userEmail, "semester": semester, "eligible": 1, "courses": semesterCourses})
-
 }

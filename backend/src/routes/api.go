@@ -21,6 +21,7 @@ func SetupRoutes() *gin.Engine {
 
 	router.GET("/get/course/:cprefix/:cnumber/info", controllers.GetInfo)
 
+	router.GET("/get/user/:email/courses", controllers.GetUserCourses)
 	router.GET("/get/user/:email/semester/:semester/courses", controllers.GetUserSemesterCourses)
 	router.POST("/post/user/:email/semester/:semester/courses", controllers.AddUserSemesterCourses)
 	router.POST("/delete/user/:email/semester/:semester/courses", controllers.RemoveUserSemesterCourses)
@@ -31,22 +32,7 @@ func SetupRoutes() *gin.Engine {
 	router.GET("/get/user/:email/password/:password", controllers.GetUser)
 	router.POST("/delete/user/:email/password/:password", controllers.RemoveUser)
 
-	router.GET("/validate", middleware.ReequireAuth, controllers.Validate)
-
-	router.POST("/post/user/:email/currentsemester", controllers.SetSemester)
-	router.GET("/get/user/:email/currentsemester", controllers.GetSemester)
-
-	router.POST("/post/user/:email/semester/:semester/generateplanadd", controllers.PlanAddCourse) //add course to be added to gen schedule
-	router.POST("/post/user/:email/semester/:semester/generateplanremove", controllers.PlanRemoveCourse) //remove course to be added from gen schedule
-
-	router.GET("/get/user/:email/semester/:semester/generateplancourses", controllers.GetPlanCourse) //check which courses are planned to be added 
-
-	router.POST("/post/user/:email/semester/:semester/generatedropadd", controllers.DropAddCourse) //add course to be removed to gen schedule
-	router.POST("/post/user/:email/semester/:semester/generatedropremove", controllers.DropRemoveCourse) //remove course to be removed from gen schedule
-
-	router.GET("/get/user/:email/semester/:semester/generatedropcourses", controllers.GetDropCourse) //check which courses are planned to be removed
-
-	router.GET("/get/user/:email/semester/:semester/generateverify", controllers.ValidateGenSchedule) //check if schedule changes are valid
+	router.GET("/validate/:token", middleware.ReequireAuth, controllers.Validate)
 
 	http.ListenAndServe(":8080",
 		handlers.CORS(
