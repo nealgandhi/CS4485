@@ -21,7 +21,6 @@ func SetupRoutes() *gin.Engine {
 
 	router.GET("/get/course/:cprefix/:cnumber/info", controllers.GetInfo)
 
-	router.GET("/get/user/:email/courses", controllers.GetUserCourses)
 	router.GET("/get/user/:email/semester/:semester/courses", controllers.GetUserSemesterCourses)
 	router.POST("/post/user/:email/semester/:semester/courses", controllers.AddUserSemesterCourses)
 	router.POST("/delete/user/:email/semester/:semester/courses", controllers.RemoveUserSemesterCourses)
@@ -32,7 +31,7 @@ func SetupRoutes() *gin.Engine {
 	router.GET("/get/user/:email/password/:password", controllers.GetUser)
 	router.POST("/delete/user/:email/password/:password", controllers.RemoveUser)
 
-	router.GET("/validate/:token", middleware.ReequireAuth, controllers.Validate)
+	router.GET("/validate", middleware.ReequireAuth, controllers.Validate)
 
 	router.POST("/post/user/:email/currentsemester", controllers.SetSemester)
 	router.GET("/get/user/:email/currentsemester", controllers.GetSemester)
