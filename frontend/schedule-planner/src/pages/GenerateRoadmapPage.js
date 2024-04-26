@@ -15,6 +15,9 @@ function GenerateRoadmapPage () {
     const [sem4, setSem4] = useState([])
     const [sem5, setSem5] = useState([])
     const [sem6, setSem6] = useState([])
+    const [sem7, setSem7] = useState([])
+    const [sem8, setSem8] = useState([])
+
 
     useEffect(() => {
         (async() => {
@@ -38,7 +41,8 @@ function GenerateRoadmapPage () {
         const target = "http://143.198.48.114:8080/post/user/" + user + "/currentsemester"
         var cS = currentSemester;
         setSchedule([])
-        while(cS !== 8) {
+        setSem0([]); setSem1([]); setSem2([]); setSem3([]); setSem4([]); setSem5([]); setSem6([]); setSem7([]); setSem8([])
+        // while(cS !== 7) {
             const semesterBody = "currentsemester=" + cS
             try {
                 const r = await fetch(target, {
@@ -52,15 +56,19 @@ function GenerateRoadmapPage () {
                     throw new Error('semesterNotSet')
                 }
                 generateSchedule(cS)
-                cS++;
+                cS = parseInt(cS) + 1;
+                console.log(cS)
             }
             catch(error) {
                 alert("User could not set semester.")
                 console.log(error)
+                cS = 10
                 return
             }
-        }
+        // }
+        console.log(currentSemester)
         formatSchedule()
+        return
     }
 
     const generateSchedule = async(cS) => {
@@ -70,6 +78,7 @@ function GenerateRoadmapPage () {
                 throw new Error('scheduleNotGenerated')
             }
             const m = await r.json();
+            console.log("m: semester: ", cS, m)
             {m.courses.map((a)=>           //Creates list of inputed courses
                 {var c = a.courseID.String
                 const currentValue = {semester: cS, courseId: c}
@@ -79,89 +88,46 @@ function GenerateRoadmapPage () {
         }
         catch(error) {
             alert("Could not generate schedule")
+            return
         }
     }
 
     const formatSchedule = () => {
         console.log(currentSemester, schedule)
-        setSem0([]); setSem1([]); setSem2([]); setSem3([]); setSem4([]); setSem5([]); setSem6([])
+        setSem0([]); setSem1([]); setSem2([]); setSem3([]); setSem4([]); setSem5([]); setSem6([]); setSem7([]); setSem8([])
 
         {schedule?.map((a)=>           //Creates list of inputed courses
                 {
-                    if(currentSemester==7) {
-                        setSem0((ls) => [...ls, a.courseId])
-                    }
-                    else if(currentSemester==6) {
-                        if(a.semester=="6") {
+                    if(currentSemester==0) {
+                        if(a.semester=="0") {
                             setSem0((ls) => [...ls, a.courseId])
                         }
-                        else {
+                        else if(a.semester=="1") {
                             setSem1((ls) => [...ls, a.courseId])
                         }
-                    }
-                    else if(currentSemester==5) {
-                        if(a.semester=="5") {
-                            setSem0((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="6") {
-                            setSem1((ls) => [...ls, a.courseId])
-                        }
-                        else {
+                        else if(a.semester=="2"){
                             setSem2((ls) => [...ls, a.courseId])
                         }
-                    }
-                    else if(currentSemester==4) {
-                        if(a.semester=="4") {
-                            setSem0((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="5") {
-                            setSem1((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="6"){
-                            setSem2((ls) => [...ls, a.courseId])
-                        }
-                        else {
+                        else if(a.semester=="3"){
                             setSem3((ls) => [...ls, a.courseId])
-                        }
-                    }
-                    else if(currentSemester==3) {
-                        if(a.semester=="3") {
-                            setSem0((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="4") {
-                            setSem1((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="5"){
-                            setSem2((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="6"){
-                            setSem3((ls) => [...ls, a.courseId])
-                        }
-                        else {
-                            setSem4((ls) => [...ls, a.courseId])
-                        }
-                    }
-                    else if(currentSemester==2) {
-                        if(a.semester=="2") {
-                            setSem0((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="3") {
-                            setSem1((ls) => [...ls, a.courseId])
                         }
                         else if(a.semester=="4"){
-                            setSem2((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="5"){
-                            setSem3((ls) => [...ls, a.courseId])
-                        }
-                        else if(a.semester=="6"){
                             setSem4((ls) => [...ls, a.courseId])
                         }
-                        else {
+                        else if(a.semester=="5"){
                             setSem5((ls) => [...ls, a.courseId])
                         }
+                        else if(a.semester=="6"){
+                            setSem6((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="7"){
+                            setSem7((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="8"){
+                            setSem8((ls) => [...ls, a.courseId])
+                        }
                     }
-                    else {
+                    else if(currentSemester==1) {
                         if(a.semester=="1") {
                             setSem0((ls) => [...ls, a.courseId])
                         }
@@ -180,19 +146,70 @@ function GenerateRoadmapPage () {
                         else if(a.semester=="6"){
                             setSem5((ls) => [...ls, a.courseId])
                         }
-                        else {
-                            setSem6((ls) => [...ls, a.courseId])
+                    }
+                    else if(currentSemester==2) {
+                        if(a.semester=="2") {
+                            setSem0((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="3") {
+                            setSem1((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="4"){
+                            setSem2((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="5"){
+                            setSem3((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="6"){
+                            setSem4((ls) => [...ls, a.courseId])
                         }
                     }
+                    else if(currentSemester==3) {
+                        if(a.semester=="3") {
+                            setSem0((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="4") {
+                            setSem1((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="5"){
+                            setSem2((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="6"){
+                            setSem3((ls) => [...ls, a.courseId])
+                        }
+                    }
+                    else if(currentSemester==4) {
+                        if(a.semester=="4") {
+                            setSem0((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="5") {
+                            setSem1((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="6"){
+                            setSem2((ls) => [...ls, a.courseId])
+                        }
+                    }
+                    else if(currentSemester==5) {
+                        if(a.semester=="5") {
+                            setSem0((ls) => [...ls, a.courseId])
+                        }
+                        else if(a.semester=="6"){
+                            setSem1((ls) => [...ls, a.courseId])
+                        }
+                    }
+                    else if(currentSemester==6) {
+                        setSem0((ls) => [...ls, a.courseId])
+                    }
+                    
                 }
             )}
             console.log("0", sem0)
-            console.log("1", sem1)
-            console.log("2", sem2)
-            console.log("3", sem3)
-            console.log("4", sem4)
-            console.log("5", sem5)
-            console.log("6", sem6)
+            // console.log("1", sem1)
+            // console.log("2", sem2)
+            // console.log("3", sem3)
+            // console.log("4", sem4)
+            // console.log("5", sem5)
+            // console.log("6", sem6)
     }
 
     const semesterInput = event => {   //handle when course input is changing (allows user to type in input)
@@ -212,6 +229,7 @@ function GenerateRoadmapPage () {
                         <label className='mr-8'>Current Semester</label>
                         <select onChange={semesterInput} className='w-1/2 border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'>
                             <option value="null">Choose a semester</option>
+                            <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -235,7 +253,7 @@ function GenerateRoadmapPage () {
                         </div>
                     )}
                 </div>
-                <div className='mt-8 w-1/2 lg:w-1/3'>
+                {/* <div className='mt-8 w-1/2 lg:w-1/3'>
                     <label className='text-xl font-semibold'>
                         Second Semester:
                     </label>
@@ -275,6 +293,46 @@ function GenerateRoadmapPage () {
                         </div>
                     )}
                 </div>
+                <div className='mt-8 w-1/2 lg:w-1/3'>
+                    <label className='text-xl font-semibold'>
+                        Sixth Semester:
+                    </label>
+                    {sem5.map((a)=>           //Creates list of inputed courses
+                        <div className='flex flex-row w-max py-1 rounded-xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2 px-2'>
+                            <div className=''>{a} </div>
+                        </div>
+                    )}
+                </div>
+                <div className='mt-8 w-1/2 lg:w-1/3'>
+                    <label className='text-xl font-semibold'>
+                        Seventh Semester:
+                    </label>
+                    {sem6.map((a)=>           //Creates list of inputed courses
+                        <div className='flex flex-row w-max py-1 rounded-xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2 px-2'>
+                            <div className=''>{a} </div>
+                        </div>
+                    )}
+                </div>
+                <div className='mt-8 w-1/2 lg:w-1/3'>
+                    <label className='text-xl font-semibold'>
+                        Seventh Semester:
+                    </label>
+                    {sem7.map((a)=>           //Creates list of inputed courses
+                        <div className='flex flex-row w-max py-1 rounded-xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2 px-2'>
+                            <div className=''>{a} </div>
+                        </div>
+                    )}
+                </div>
+                <div className='mt-8 w-1/2 lg:w-1/3'>
+                    <label className='text-xl font-semibold'>
+                        Seventh Semester:
+                    </label>
+                    {sem8.map((a)=>           //Creates list of inputed courses
+                        <div className='flex flex-row w-max py-1 rounded-xl bg-theme-orange text-theme-navy font-semibold border-2 border-theme-navy mb-2 px-2'>
+                            <div className=''>{a} </div>
+                        </div>
+                    )}
+                </div> */}
             </div>
         </div>
     )

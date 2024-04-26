@@ -1,14 +1,15 @@
 package controllers
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
-	"fmt"
-	"database/sql"
-	"strconv"
+
 	"github.com/capstone/backend/src/models"
 	"github.com/capstone/backend/src/utils"
 	"github.com/gin-gonic/gin"
@@ -109,7 +110,7 @@ func GetUserCourses(c *gin.Context) {
 	userEmail := c.Param("email")
 	semesters := [...]string{"2024.1", "2023.3", "2023.1", "2022.3", "2022.1", "2021.3", "2021.1", "2020.3"}
 
-	reply := gin.H{"email":userEmail}
+	reply := gin.H{"email": userEmail}
 
 	for _, semester := range semesters {
 		results, err := utils.DB.Query("SELECT course_id FROM UserPlan WHERE email=\"" + userEmail + "\" and semester=\"" + semester + "\"")
@@ -234,7 +235,7 @@ func AddUser(c *gin.Context) {
 		return
 	}
 
-	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + string(hash) + "\")"
+	sqlInsertString := "INSERT INTO Users VALUES (\"" + userEmail + "\",\"" + id + "\",\"" + string(hash) + "\", null, null)"
 
 	_, err := utils.DB.Query(sqlInsertString)
 	if err != nil {
@@ -362,7 +363,7 @@ func SetSemester(c *gin.Context) {
 	userEmail := c.Param("email")
 	currentsemester := c.PostForm("currentsemester")
 
-	sqlInsertString := "UPDATE Users SET current_semester = " +  currentsemester + " WHERE email=\"" + userEmail + "\""
+	sqlInsertString := "UPDATE Users SET current_semester = " + currentsemester + " WHERE email=\"" + userEmail + "\""
 
 	fmt.Print(sqlInsertString)
 
@@ -401,7 +402,6 @@ func GetSemester(c *gin.Context) {
 
 }
 
-
 func PlanAddCourse(c *gin.Context) {
 	userEmail := c.Param("email")
 	semester := c.Param("semester") // format (str): [YYYY].[Semester ID: 1 for spring, 2 for summer, 3 for fall]
@@ -424,7 +424,6 @@ func PlanAddCourse(c *gin.Context) {
 		return
 	}
 }
-
 
 func PlanRemoveCourse(c *gin.Context) {
 	userEmail := c.Param("email")
@@ -612,10 +611,10 @@ func ValidateGenSchedule(c *gin.Context) {
 			panic(err.Error())
 		}
 		for i := 0; i < len(semesterCourses); i++ {
-			if row.CourseId ==  semesterCourses[i].CourseId {
+			if row.CourseId == semesterCourses[i].CourseId {
 				break
 			}
-			if i == len(semesterCourses) - 1 {
+			if i == len(semesterCourses)-1 {
 				semesterCourses = append(semesterCourses, row)
 			}
 		}
@@ -636,12 +635,12 @@ func ValidateGenSchedule(c *gin.Context) {
 			panic(err.Error())
 		}
 		for i := 0; i < len(semesterCourses); i++ {
-			if row.CourseId ==  semesterCourses[i].CourseId {
+			if row.CourseId == semesterCourses[i].CourseId {
 				fmt.Print("REMOVE")
-				if i == len(semesterCourses) - 1 {
-					semesterCourses = semesterCourses[:len(semesterCourses) - 1]
+				if i == len(semesterCourses)-1 {
+					semesterCourses = semesterCourses[:len(semesterCourses)-1]
 				} else {
-					semesterCourses = append(semesterCourses[:i], semesterCourses[i + 1:]...)
+					semesterCourses = append(semesterCourses[:i], semesterCourses[i+1:]...)
 				}
 			}
 		}

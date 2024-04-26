@@ -80,7 +80,7 @@ function RoadmapPage() {
             if(!r.ok) {
                 throw new Error('classNotAdded')
             }
-            alert("Classes has been added.")
+            // alert("Classes has been added.")
             handleHistory()
             setCoursesTakenList([])
         }
