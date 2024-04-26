@@ -27,14 +27,14 @@ function LoginForm() {
         try {
             const r = await fetch("http://143.198.48.114:8080/get/user/" + email + "/password/" + pass);
             if(!r.ok) {
-                throw new Error('user not found')
+                throw new Error(r.statusText)
             }
             const m = await r.json();
             // console.log(m.token)
             routeChange(m.token)
         }
         catch(error) {
-            alert("Email or password incorrect.")
+            alert(error)
         }
     }
 
@@ -45,7 +45,7 @@ function LoginForm() {
 
 
     return (
-        <div className='content-center w-2/5 lg:w-2/5 bg-white px-10 py-5 rounded-3xl border-2 border-gray-800 mt-16 mr-auto ml-auto mb-16'>
+        <div className='content-center w-2/5 lg:w-2/5 bg-white px-10 py-5 rounded-3xl border-2 border-gray-800 mr-auto ml-auto'>
             <div fontfamily="Arial" class="pt-0 pr-3 pb-0 pl-3 mr-auto ml-auto sm:px-5 lg:px-12 max-w-7xl">
                 <div class="bg-white rounded-xl sm:p-10">
                     <div class="pt-8 pr-8 pb-8 pl-8 lg:col-span-7">

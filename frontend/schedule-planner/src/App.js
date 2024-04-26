@@ -13,6 +13,7 @@ import CourseSelectionPage from './pages/CourseSelectionPage';
 // import AboutUsPage from './pages/AboutUsPage';
 import Signup from './pages/SignupPage';
 import Roadmap from './pages/RoadmapPage'
+import RoadmapGenerate from './pages/GenerateRoadmapPage'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/prerequisites" element={<PrerequisiteTrees/>}/>
           <Route path="/courseSelection" element={<CourseSelectionPage/> } />
           <Route path="/roadmap" element={<Roadmap />} />
+          <Route path='/roadmap/generate' element={<RoadmapGenerate/>} />
         </Routes>
       </BrowserRouter>
       <Footer/>

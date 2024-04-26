@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 
-function RoadmapPage({token}) {
+function RoadmapPage() {
 
     const [prefix, setPrefix] = useState(""); 
     const [number, setNumber] = useState("");
@@ -12,11 +12,11 @@ function RoadmapPage({token}) {
     const [semesterYear, setSemesterYear] = useState("")
     const [semesterNum, setSemesterNum] = useState()
     const [courseHistoryList, setCourseHistoryList] = useState([])
+    const token = location.state.passToken
 
     useEffect(() => {
         (async() => {
             try {
-                const token = location.state.passToken
                 const r = await fetch("http://143.198.48.114:8080/validate/" + token);
                 if(!r.ok) {
                     throw new Error('token not passed')
@@ -164,6 +164,10 @@ function RoadmapPage({token}) {
         }
     }
 
+    const handleGenerate = () => {
+        navigate('/roadmap/generate', {state:{passToken:token}})
+    }
+
     const handleDrag = (e, c) => {             //handles dragging from available courses to selected courses to the right
         e.dataTransfer.setData("courseID", c)
     }
@@ -251,7 +255,8 @@ function RoadmapPage({token}) {
                         )}
                     </div>
                 </div>
-                <button onClick={handleConfirm} className="w-32 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Confirm courses for semester {semesterYear}.{semesterNum}</button>
+                <button onClick={handleConfirm} className="w-64 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Confirm courses for semester {semesterYear}.{semesterNum}</button>
+                <button onClick={handleGenerate} className="w-64 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-red-800 text-white font-semibold mt-4">Generate your Roadmap -> </button>
                 {/* <button onClick={handleHistory} className="w-32 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-2 rounded-xl bg-blue-800 text-white font-semibold">Refresh</button> */}
             </div>
         </div>
