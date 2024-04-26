@@ -5,7 +5,6 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 
-// Enhanced Calendar with Drag and Drop functionality
 const DnDCalendar = withDragAndDrop(Calendar);
 
 function Schedule() {
@@ -16,7 +15,7 @@ function Schedule() {
     if (title) {
       setEvents((prevEvents) => [
         ...prevEvents,
-        { id: Date.now(), title, start, end } // Using current timestamp as unique id
+        { id: Date.now(), title, start, end } 
       ]);
     }
   }, []);
@@ -53,7 +52,7 @@ function Schedule() {
         resizable
         selectable
         scrollToTime={scrollToTime}
-        style={{ height: "80vh" }} // Make sure the calendar has enough space to display properly
+        style={{ height: "80vh" }} 
       />
     </div>
   );
