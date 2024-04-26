@@ -8,50 +8,63 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 const DnDCalendar = withDragAndDrop(Calendar);
 const localizer = momentLocalizer(moment);
 
-function eventReducer(state, action) {
-  switch (action.type) {
-    case 'ADD':
-      return [...state, { id: Date.now(), ...action.payload }];
-    case 'UPDATE':
-      return state.map(evt => evt.id === action.payload.id ? { ...evt, ...action.payload } : evt);
-    case 'DELETE':
-      return state.filter(evt => evt.id !== action.payload.id);
-    default:
-      return state;
-  }
+function useEventScheduler(initialEvents = []) {
+  const eventReducer = (state, action) => {
+    switch (action.type) {
+      case 'ADD':
+        return [...state, { id: Date.now(), ...action.payload }];
+      case 'UPDATE':
+        return state.map(evt => evt.id === action.payload.id ? { ...evt, ...action.payload } : evt);
+      case 'DELETE':
+        return state.filter(evt => evt.id !== action.payload.id);
+      default:
+        return state;
+    }
+  };
+
+  const [events, dispatch] = useReducer(eventReducer, initialEvents);
+
+  const addEvent = useCallback((start, end, title) => {
+    dispatch({ type: 'ADD', payload: { start, end, title } });
+  }, []);
+
+  const updateEvent = useCallback((event) => {
+    dispatch({ type: 'UPDATE', payload: event });
+  }, []);
+
+  const deleteEvent = useCallback((eventId) => {
+    dispatch({ type: 'DELETE', payload: { id: eventId } });
+  }, []);
+
+  return { events, addEvent, updateEvent, deleteEvent };
 }
 
 function Schedule() {
-  const [events, dispatch] = useReducer(eventReducer, []);
+  const { events, addEvent, updateEvent, deleteEvent } = useEventScheduler();
 
   const handleSelectSlot = useCallback(({ start, end }) => {
-    const title = window.prompt('New Event name'); 
+    const title = window.prompt('New Event name');
     if (title) {
-      dispatch({ type: 'ADD', payload: { title, start, end } });
+      addEvent(start, end, title);
     }
-  }, []);
+  }, [addEvent]);
 
   const handleSelectEvent = useCallback((event) => {
-    const title = window.prompt('Edit Event name', event.title); 
+    const title = window.prompt('Edit Event name', event.title);
     if (title) {
-      dispatch({ type: 'UPDATE', payload: { ...event, title } });
+      updateEvent({ ...event, title });
     }
-  }, []);
-
-  const handleDeleteEvent = useCallback((eventId) => {
-    if (window.confirm('Are you sure you want to delete this event?')) { 
-      dispatch({ type: 'DELETE', payload: { id: eventId } });
-    }
-  }, []);
+  }, [updateEvent]);
 
   const handleEventChange = useCallback(({ event, start, end }) => {
-    dispatch({ type: 'UPDATE', payload: { id: event.id, start, end } });
-  }, []);
+    updateEvent({ id: event.id, start, end });
+  }, [updateEvent]);
 
-  
-  const eventPropGetter = (event, start, end, isSelected) => ({
+  const eventPropGetter = (event) => ({
+    style: {
+      backgroundColor: '#3174ad'
+    },
     onDoubleClick: () => handleSelectEvent(event),
-
   });
 
   return (
@@ -71,7 +84,6 @@ function Schedule() {
         selectable
         style={{ height: "80vh" }}
       />
-      
     </div>
   );
 }
