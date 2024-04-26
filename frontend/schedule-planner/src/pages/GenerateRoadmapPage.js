@@ -226,7 +226,7 @@ function GenerateRoadmapPage () {
             <div className='flex flex-col mt-12'>
                 <div className='w-3/4'>
                     <div>
-                        <label className='mr-8'>Current Semester</label>
+                        <label className='mr-8'>Next Semester</label>
                         <select onChange={semesterInput} className='w-1/2 border-2 border-blue-100 rounded-xl p-3 mt-1 bg-transparent'>
                             <option value="null">Choose a semester</option>
                             <option value="0">0</option>
