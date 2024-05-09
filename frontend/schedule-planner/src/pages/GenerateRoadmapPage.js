@@ -253,7 +253,7 @@ function GenerateRoadmapPage () {
                         </div>
                     )}
                 </div>
-                {/* <div className='mt-8 w-1/2 lg:w-1/3'>
+                <div className='mt-8 w-1/2 lg:w-1/3'>
                     <label className='text-xl font-semibold'>
                         Second Semester:
                     </label>
@@ -332,7 +332,7 @@ function GenerateRoadmapPage () {
                             <div className=''>{a} </div>
                         </div>
                     )}
-                </div> */}
+                </div>
             </div>
         </div>
     )
